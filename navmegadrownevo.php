@@ -291,7 +291,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureMenu']) && $_FILES['PictureMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureMenu']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/img/bg_menu'.$extension;
+					$img = dirname(__FILE__).'/img/menu/bg_menu'.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureMenu']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
