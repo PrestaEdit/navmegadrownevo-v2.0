@@ -1452,7 +1452,7 @@ $this->_html .= '<td>';
 										</td><td align="center">';
 										if($ButtonDetail[0]['img_name'] != "") {
 											$this->_html .= '<table width="50%" cellpadding="0" cellspacing="0"><tr><td width="50%" align="right" valign="top">';
-											$this->_html .= '<img src="'.$this->_path.'views/img/'.$ButtonDetail[0]['img_name'].'" border="0">';
+											$this->_html .= '<img src="'.$this->_path.'views/img/menu/'.$ButtonDetail[0]['img_name'].'" border="0">';
 											$this->_html .= '</td><td valign="bottom" align="left">';
 											$this->_html .= '<img src="../img/admin/disabled.gif" onclick="deletePictureMenu()" style="cursor: pointer">';
 											$this->_html .= '</td></tr></table>';
