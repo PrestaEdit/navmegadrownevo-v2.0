@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.0';
+	 	$this->version = '2.1';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -405,7 +405,7 @@ class navmegadrownEvo extends Module
 					$idButton = $_POST['idButton'];
 					if(in_array($extension, $AutorizeExtensions)) {
 						if ( isset($_FILES['PictureFile']['name']) ) {
-							$img = dirname(__FILE__).'/views/images/imgBout'.$idButton.$extension;
+							$img = dirname(__FILE__).'/views/img/imgBout'.$idButton.$extension;
 							if ( move_uploaded_file( $_FILES['PictureFile']['tmp_name'], $img ) ) {
 								$result = Db::getInstance()->autoExecute(
 								_DB_PREFIX_.'admevo_button', 
@@ -438,8 +438,8 @@ class navmegadrownEvo extends Module
 							"img_name"=>''								
 						), 
 						"UPDATE", "id_button=".$idButton); 
-					if(is_file(dirname(__FILE__).'/views/images/'.$_POST['NamePicture']))
-						if(unlink(dirname(__FILE__).'/views/images/'.$_POST['NamePicture']))
+					if(is_file(dirname(__FILE__).'/views/img/'.$_POST['NamePicture']))
+						if(unlink(dirname(__FILE__).'/views/img/'.$_POST['NamePicture']))
 							$output .= $this->displayConfirmation($this->l('File deleted'));
 						else
 							$output .= $this->displayError($this->l('File not deleted'));
@@ -470,7 +470,7 @@ class navmegadrownEvo extends Module
 					$idButton = $_POST['idButton'];
 					if(in_array($extension, $AutorizeExtensions)) {
 						if ( isset($_FILES['PictureFileBackground']['name']) ) {
-							$img = dirname(__FILE__).'/views/images_menu/imgBackground'.$idButton.$extension;
+							$img = dirname(__FILE__).'/views/img/menu/imgBackground'.$idButton.$extension;
 							if ( move_uploaded_file( $_FILES['PictureFileBackground']['tmp_name'], $img ) ) {
 								$result = Db::getInstance()->autoExecute(
 								_DB_PREFIX_.'admevo_button', 
@@ -494,8 +494,8 @@ class navmegadrownEvo extends Module
 							"img_name_background"=>''								
 						), 
 						"UPDATE", "id_button=".$idButton); 
-					if(is_file(dirname(__FILE__).'/views/images_menu/'.$_POST['NamePictureBackground']))
-						if(unlink(dirname(__FILE__).'/views/images_menu/'.$_POST['NamePictureBackground']))
+					if(is_file(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePictureBackground']))
+						if(unlink(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePictureBackground']))
 							$output .= $this->displayConfirmation($this->l('File deleted'));
 						else
 							$output .= $this->displayError($this->l('File not deleted'));
@@ -1452,7 +1452,7 @@ $this->_html .= '<td>';
 										</td><td align="center">';
 										if($ButtonDetail[0]['img_name'] != "") {
 											$this->_html .= '<table width="50%" cellpadding="0" cellspacing="0"><tr><td width="50%" align="right" valign="top">';
-											$this->_html .= '<img src="'.$this->_path.views/'images/'.$ButtonDetail[0]['img_name'].'" border="0">';
+											$this->_html .= '<img src="'.$this->_path.'views/img/'.$ButtonDetail[0]['img_name'].'" border="0">';
 											$this->_html .= '</td><td valign="bottom" align="left">';
 											$this->_html .= '<img src="../img/admin/disabled.gif" onclick="deletePictureMenu()" style="cursor: pointer">';
 											$this->_html .= '</td></tr></table>';
@@ -1511,7 +1511,7 @@ $this->_html .= '<td>';
 										<tr><td align="center">';
 										if($ButtonDetail[0]['img_name_background'] != "") {
 											$this->_html .= '<table width="50%" cellpadding="0" cellspacing="0"><tr><td width="50%" align="right" valign="top">';
-											$this->_html .= '<img src="'.$this->_path.'images_menu/'.$ButtonDetail[0]['img_name_background'].'" border="0">';
+											$this->_html .= '<img src="'.$this->_path.'img/menu/'.$ButtonDetail[0]['img_name_background'].'" border="0">';
 											$this->_html .= '</td><td valign="bottom" align="left">';
 											$this->_html .= '<img src="../img/admin/disabled.gif" onclick="deletePictureBackground()" style="cursor: pointer">';
 											$this->_html .= '</td></tr></table>';
@@ -1721,7 +1721,7 @@ $this->_html .= '<td>';
 				}
 				if(array_key_exists( $kButton, $tabLines))
 				if(sizeof($tabLines[$kButton])) {
-					$this->_menu .= '<div class="sub" style="width: '.($MDParameters[0]['MenuWidth'] - 2).'px;  background-color: #'.$ValButton['buttonColor'].'; '.($ValButton['img_name_background']!="" ? 'background-image: url('.$this->_path.'images_menu/'.$ValButton['img_name_background'].'); background-repeat:no-repeat; background-position:top left; ' : false).' ">'.$this->eol;
+					$this->_menu .= '<div class="sub" style="width: '.($MDParameters[0]['MenuWidth'] - 2).'px;  background-color: #'.$ValButton['buttonColor'].'; '.($ValButton['img_name_background']!="" ? 'background-image: url('.$this->_path.'img/menu/'.$ValButton['img_name_background'].'); background-repeat:no-repeat; background-position:top left; ' : false).' ">'.$this->eol;
 					$this->_menu .= '<table class="megaDrownTable" cellpadding="0" cellspacing="0" width="100%">';
 					if($MDParameters[0]['stateTR1']=="on") {
 						$this->_menu .= '<tr style="height:'.$MDParameters[0]['heightTR1'].'px">';
@@ -1738,7 +1738,7 @@ $this->_html .= '<td>';
 						if($ValButton['img_name'] != '') {
 							if($ValButton['img_link'] != '')
 								$this->_menu .= '<a href="'.urldecode($ValButton['img_link']).'" style="float:none; margin:0; padding:0">';
-							$this->_menu .= '<img src="'.$this->_path.'views/images/'.$ValButton['img_name'].'" style="border:0px" alt="'.$ValButton['img_name'].'"/>'.$this->eol;
+							$this->_menu .= '<img src="'.$this->_path.'views/img/'.$ValButton['img_name'].'" style="border:0px" alt="'.$ValButton['img_name'].'"/>'.$this->eol;
 							if($ValButton['img_link'] != '')
 								$this->_menu .= '</a>';
 						}
