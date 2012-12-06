@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2';
+	 	$this->version = '2.2.1';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -1293,24 +1293,24 @@ $this->_html .= '<td>';
 							<table width="100%">
 								<tr><td width="50%" align="center" style="font-weight: bold">'.$this->l('Menu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_menu'.$MDParameters[0]['extensionMenu'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('Button <i>(Height = 2 X Menu Height)</i>').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_bout'.$MDParameters[0]['extensionBout'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
 				$this->_html .= '<tr>';
-				if(is_file(dirname(__FILE__).'/views/img/bg_menu'.$MDParameters[0]['extensionMenu']))
-					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/bg_menu'.$MDParameters[0]['extensionMenu'].'"></td>';
+				if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu'.$MDParameters[0]['extensionMenu']))
+					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/bg_menu'.$MDParameters[0]['extensionMenu'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
-				if(is_file(dirname(__FILE__).'/views/img/bg_bout'.$MDParameters[0]['extensionBout']))
-					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/bg_bout'.$MDParameters[0]['extensionBout'].'"></td>';
+				if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout'.$MDParameters[0]['extensionBout']))
+					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/bg_bout'.$MDParameters[0]['extensionBout'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				$this->_html .= '</tr>';
 				$this->_html .= '<tr>';
 				$this->_html .= '<td align="center" style="font-weight: bold">'.$this->l('Background Submenu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'sub_bg'.$MDParameters[0]['extensionBack'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('List Arrow').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'navlist_arrow'.$MDParameters[0]['extensionArro'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
 				$this->_html .= '<tr>';
-				if(is_file(dirname(__FILE__).'/views/img/sub_bg'.$MDParameters[0]['extensionBack'].''))
-					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/sub_bg'.$MDParameters[0]['extensionBack'].'"></td>';
+				if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg'.$MDParameters[0]['extensionBack'].''))
+					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/sub_bg'.$MDParameters[0]['extensionBack'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
-				if(is_file(dirname(__FILE__).'/views/img/navlist_arrow'.$MDParameters[0]['extensionArro'].''))
-					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/navlist_arrow'.$MDParameters[0]['extensionArro'].'"></td>';
+				if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow'.$MDParameters[0]['extensionArro'].''))
+					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/navlist_arrow'.$MDParameters[0]['extensionArro'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				$this->_html .= '</tr>
