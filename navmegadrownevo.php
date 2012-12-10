@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2.1';
+	 	$this->version = '2.2.2';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -699,20 +699,12 @@ $this->_html .= '<td>';
 				<tr><td>'.$this->l('Position').'&nbsp;:&nbsp;</td><td>'.$this->l('Category').'&nbsp;<select name="columnBox_'.$id_category.'" style="font-size : 10px">';
 				for($c=1; $c<=10; $c++) 
 	$this->_html .= '<option value="'.$c.'" '.(isset($CategoryColumn[$id_category]) && $CategoryColumn[$id_category] == $c ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Column').' '.$c.'&nbsp;&nbsp;</option>';
-	$this->_html .= '</select>&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;<select name="lineBox_'.$id_category.'" style="font-size : 10px">
-					<option value="1" '.($CategoryLine[$id_category] == 1 ||  $CategoryLine[$id_category] == ""? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 1&nbsp;&nbsp;</option>
-					<option value="2" '.($CategoryLine[$id_category] == 2 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 2&nbsp;&nbsp;</option>
-					<option value="3" '.($CategoryLine[$id_category] == 3 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 3&nbsp;&nbsp;</option>
-					<option value="4" '.($CategoryLine[$id_category] == 4 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 4&nbsp;&nbsp;</option>
-					<option value="5" '.($CategoryLine[$id_category] == 5 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 5&nbsp;&nbsp;</option>
-					<option value="6" '.($CategoryLine[$id_category] == 6 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 6&nbsp;&nbsp;</option>
-					<option value="7" '.($CategoryLine[$id_category] == 7 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 7&nbsp;&nbsp;</option>
-					<option value="8" '.($CategoryLine[$id_category] == 8 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 8&nbsp;&nbsp;</option>
-					<option value="9" '.($CategoryLine[$id_category] == 9 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 9&nbsp;&nbsp;</option>
-					<option value="10" '.($CategoryLine[$id_category] == 10 ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' 10&nbsp;&nbsp;</option>
-				</select>&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
-					<option value="0" '.($CategoryState[$id_category] == 0 ? " selected" : false).'>'.$this->l('disabled').'</option>
-					<option value="1" '.($CategoryState[$id_category] == 1 || $CategoryState[$id_category] == "" ? " selected" : false).'>'.$this->l('enabled').'</option>
+	$this->_html .= '</select>&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;<select name="lineBox_'.$id_category.'" style="font-size : 10px">';
+	for($i=1;$i<=10;$i++)
+		$this->_html .= '<option value="'.$i.'" '.(isset($CategoryLine[$id_category]) AND ($CategoryLine[$id_category] == $i) ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' '.$i.'&nbsp;&nbsp;</option>';
+	$this->_html .= '</select>&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
+					<option value="0" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 0 ? " selected" : false).'>'.$this->l('disabled').'</option>
+					<option value="1" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 1 || $CategoryState[$id_category] == "" ? " selected" : false).'>'.$this->l('enabled').'</option>
 				</select></td></tr>
 				<tr><td>'.$this->l('Name').'&nbsp;:&nbsp;</td><td>';
 				
@@ -1549,7 +1541,7 @@ $this->_html .= '<td>';
 								</div>
 							</td></tr></table>';
 			$this->_html .= '</td></tr>';
-			$this->_html .= '<tr><td>'.$this->l('Link').' : </td><td><input type="text" id="LinkPage" name="LinkPage" value="'.$ButtonLinks[0]['link'].'" size="100"></td></tr>';
+			$this->_html .= '<tr><td>'.$this->l('Link').' : </td><td><input type="text" id="LinkPage" name="LinkPage" value="'.(isset($ButtonLinks[0]['link']) ? $ButtonLinks[0]['link'] : '').'" size="100"></td></tr>';
 			$this->_html .= '<tr><td colspan="2" align="center" style="padding-top : 5px; padding-bottom : 5px; font-weight : bold"><img src="'.$this->_path.'views/img/fleche_bas.png"/>&nbsp;'.$this->l('AND/OR').'&nbsp;&nbsp;<img src="'.$this->_path.'views/img/fleche_bas.png"/></td></tr>';
 			$this->_html .= '<tr><td colspan="2">';
 			$this->_html .='<label style="margin-left : -100px; font-weight : normal">'.$this->l('Categories').' : </label>
@@ -1738,7 +1730,7 @@ $this->_html .= '<td>';
 						if($ValButton['img_name'] != '') {
 							if($ValButton['img_link'] != '')
 								$this->_menu .= '<a href="'.urldecode($ValButton['img_link']).'" style="float:none; margin:0; padding:0">';
-							$this->_menu .= '<img src="'.$this->_path.'views/img/'.$ValButton['img_name'].'" style="border:0px" alt="'.$ValButton['img_name'].'"/>'.$this->eol;
+							$this->_menu .= '<img src="'.$this->_path.'views/img/menu/'.$ValButton['img_name'].'" style="border:0px" alt="'.$ValButton['img_name'].'"/>'.$this->eol;
 							if($ValButton['img_link'] != '')
 								$this->_menu .= '</a>';
 						}
