@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2.2';
+	 	$this->version = '2.2.3';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -291,7 +291,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureMenu']) && $_FILES['PictureMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureMenu']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/img/menu/bg_menu'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/bg_menu'.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureMenu']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -309,7 +309,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureButton']) && $_FILES['PictureButton']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureButton']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/img/menu/bg_bout'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/bg_bout'.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureButton']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -327,7 +327,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureListArrow']) && $_FILES['PictureListArrow']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureListArrow']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/img/menu/navlist_arrow'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/navlist_arrow'.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureListArrow']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -345,7 +345,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PicturebackSubMenu']) && $_FILES['PicturebackSubMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PicturebackSubMenu']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/img/menu/sub_bg'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/sub_bg'.$extension;
 					if ( !move_uploaded_file( $_FILES['PicturebackSubMenu']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
