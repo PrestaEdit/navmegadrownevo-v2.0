@@ -105,6 +105,11 @@
 	`name_menu` VARCHAR( 255 ) NULL, 
 	 INDEX ( `id_button` , `id_custom`, `id_lang` )
 	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';	
+	
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'admevo_button_shop` (
+  `id_admevo_button` int(11) NOT NULL,
+  `id_shop` int(11) NOT NULL
+	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 		
 	// Insert Datas
 	$sql[] = '

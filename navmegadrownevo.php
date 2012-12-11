@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2.3';
+	 	$this->version = '2.2.4';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -291,7 +291,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureMenu']) && $_FILES['PictureMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureMenu']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/views/img/menu/bg_menu'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureMenu']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -309,7 +309,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureButton']) && $_FILES['PictureButton']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureButton']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/views/img/menu/bg_bout'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureButton']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -327,7 +327,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PictureListArrow']) && $_FILES['PictureListArrow']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureListArrow']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/views/img/menu/navlist_arrow'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$extension;
 					if ( !move_uploaded_file( $_FILES['PictureListArrow']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -345,7 +345,7 @@ class navmegadrownEvo extends Module
 			if(isset($_FILES['PicturebackSubMenu']) && $_FILES['PicturebackSubMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PicturebackSubMenu']['name'], -4));
 				if(in_array($extension, $AutorizeExtensions)) {
-					$img = dirname(__FILE__).'/views/img/menu/sub_bg'.$extension;
+					$img = dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$extension;
 					if ( !move_uploaded_file( $_FILES['PicturebackSubMenu']['tmp_name'], $img ) )
 						$errorsNb++;
 					else
@@ -1276,21 +1276,30 @@ $this->_html .= '<td>';
 		</table>';
 		$this->_html .= '<p align="center"><input name="SubmitButtonDesign" type="submit" value="'.$this->l('  Save  ').'" class="button"></p>';
 		$this->_html .= '<div id="DetailActualPictures">
-							<table cellpadding="0" cellspacing="2" border="0" width="100%" class="table">
-								<tr>
-									<td colspan="9" align="center" class="alt_row" onclick="AfficheMasqueSlide(\'ActualPictures\')" style="cursor: pointer">'.$this->l('Click here to view pictures').'</td>
-								</tr>
-							</table>
-							<div width="100%" id="ActualPictures" style="display: none">
-							<table width="100%">
-								<tr><td width="50%" align="center" style="font-weight: bold">'.$this->l('Menu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_menu'.$MDParameters[0]['extensionMenu'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('Button <i>(Height = 2 X Menu Height)</i>').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_bout'.$MDParameters[0]['extensionBout'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
+											<table cellpadding="0" cellspacing="2" border="0" width="100%" class="table">
+												<tr>
+													<td colspan="9" align="center" class="alt_row" onclick="AfficheMasqueSlide(\'ActualPictures\')" style="cursor: pointer">'.$this->l('Click here to view pictures').'</td>
+												</tr>
+											</table>
+											<div width="100%" id="ActualPictures" style="display: none">
+											<table width="100%">
+												<tr>
+													<td width="50%" align="center" style="font-weight: bold">
+														'.$this->l('Menu').'&nbsp;
+														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_menu'.$MDParameters[0]['extensionMenu'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
+													</td>
+													<td align="center" style="font-weight: bold">
+														'.$this->l('Button <i>(Height = 2 X Menu Height)</i>').'&nbsp;
+														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_bout'.$MDParameters[0]['extensionBout'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
+													</td>
+												</tr>';
 				$this->_html .= '<tr>';
-				if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu'.$MDParameters[0]['extensionMenu']))
-					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/bg_menu'.$MDParameters[0]['extensionMenu'].'"></td>';
+				if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu']))
+					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout'.$MDParameters[0]['extensionBout']))
-					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/bg_bout'.$MDParameters[0]['extensionBout'].'"></td>';
+					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				$this->_html .= '</tr>';
@@ -1298,11 +1307,11 @@ $this->_html .= '<td>';
 				$this->_html .= '<td align="center" style="font-weight: bold">'.$this->l('Background Submenu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'sub_bg'.$MDParameters[0]['extensionBack'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('List Arrow').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'navlist_arrow'.$MDParameters[0]['extensionArro'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
 				$this->_html .= '<tr>';
 				if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg'.$MDParameters[0]['extensionBack'].''))
-					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/sub_bg'.$MDParameters[0]['extensionBack'].'"></td>';
+					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow'.$MDParameters[0]['extensionArro'].''))
-					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/navlist_arrow'.$MDParameters[0]['extensionArro'].'"></td>';
+					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				$this->_html .= '</tr>
@@ -1592,24 +1601,25 @@ $this->_html .= '<td>';
 	}
 	private function makeMegaDrown($IdLang) 
 	{
-		if (isset($_GET['id_category']))
-			$ActiveCategory = intval($_GET['id_category']);
+		if(Tools::getIsset('id_category'))
+			$ActiveCategory = (int)Tools::getValue('id_category');
 		else
-			$ActiveCategory = "";
-		if (isset($_GET['id_product']))
+			$ActiveCategory = null;
+			
+		if(Tools::getIsset('id_product'))
 		{			
-			if (!isset($this->context->cookie->last_visited_category) OR !Product::idIsOnCategoryId(intval($_GET['id_product']), array('0' => array('id_category' => $this->context->cookie->last_visited_category))))
+			if (!isset($this->context->cookie->last_visited_category) 
+					OR !Product::idIsOnCategoryId(intval($_GET['id_product']), array('0' => array('id_category' => $this->context->cookie->last_visited_category))))
 			{
 				$product = new Product(intval($_GET['id_product']));
 				if (isset($product) AND Validate::isLoadedObject($product))
-					$ActiveCategory = intval($product->id_category_default);
+					$ActiveCategory = (int)$product->id_category_default;
 			}
-			else {
-				$ActiveCategory = $this->context->cookie->last_visited_category;
-			}
+			else
+				$ActiveCategory = (int)$this->context->cookie->last_visited_category;
 		}	
 		
-		if($ActiveCategory != "") {
+		if($ActiveCategory !== null) {
 			$resultCat = Db::getInstance()->ExecuteS('
 				SELECT *  
 				FROM '._DB_PREFIX_.'admevo_button_link_cat 
@@ -1895,19 +1905,20 @@ $this->_html .= '<td>';
   {
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		$bg_menu = 0;
-		$bg_bout = 0;
-		$navlist_arrow = 0;
-		$sub_bg = 0;
+		$parameters = array();
+		$paramerters['bg_menu'] = 0;
+		$paramerters['bg_bout'] = 0;
+		$paramerters['navlist_arrow'] = 0;
+		$paramerters['sub_bg'] = 0;
 		
-		if(is_file(dirname(__FILE__).'/views/img/bg_menu'.$MDParameters[0]['extensionMenu'])) 		
-			$bg_menu 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/bg_bout'.$MDParameters[0]['extensionBout'])) 		
-			$bg_bout 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/navlist_arrow'.$MDParameters[0]['extensionArro'])) 	
-			$navlist_arrow 	= 1;
-		if(is_file(dirname(__FILE__).'/views/img/sub_bg'.$MDParameters[0]['extensionBack'])) 			
-			$sub_bg 		= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'])) 		
+			$paramerters['bg_menu'] 		= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'])) 		
+			$paramerters['bg_bout'] 		= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'])) 	
+			$paramerters['navlist_arrow'] 	= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'])) 			
+			$paramerters['sub_bg'] 		= 1;
 		
 		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
 		{
@@ -1951,10 +1962,10 @@ $this->_html .= '<td>';
 			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
 			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
 			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $bg_menu,
-			'bg_boutEvo' => $bg_bout,
-			'navlist_arrowEvo' => $navlist_arrow,
-			'sub_bgEvo' => $sub_bg )
+			'bg_menuEvo' => $paramerters['bg_menu'],
+			'bg_boutEvo' => $paramerters['bg_bout'],
+			'navlist_arrowEvo' => $paramerters['navlist_arrow'],
+			'sub_bgEvo' => $paramerters['sub_bg'] )
 		);				
 		
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
