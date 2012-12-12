@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2.4';
+	 	$this->version = '2.2.5';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -1512,7 +1512,7 @@ $this->_html .= '<td>';
 										<tr><td align="center">';
 										if($ButtonDetail[0]['img_name_background'] != "") {
 											$this->_html .= '<table width="50%" cellpadding="0" cellspacing="0"><tr><td width="50%" align="right" valign="top">';
-											$this->_html .= '<img src="'.$this->_path.'img/menu/'.$ButtonDetail[0]['img_name_background'].'" border="0">';
+											$this->_html .= '<img src="'.$this->_path.'views/img/menu/'.$ButtonDetail[0]['img_name_background'].'" border="0">';
 											$this->_html .= '</td><td valign="bottom" align="left">';
 											$this->_html .= '<img src="../img/admin/disabled.gif" onclick="deletePictureBackground()" style="cursor: pointer">';
 											$this->_html .= '</td></tr></table>';
@@ -1723,7 +1723,7 @@ $this->_html .= '<td>';
 				}
 				if(array_key_exists( $kButton, $tabLines))
 				if(sizeof($tabLines[$kButton])) {
-					$this->_menu .= '<div class="sub" style="width: '.($MDParameters[0]['MenuWidth'] - 2).'px;  background-color: #'.$ValButton['buttonColor'].'; '.($ValButton['img_name_background']!="" ? 'background-image: url('.$this->_path.'img/menu/'.$ValButton['img_name_background'].'); background-repeat:no-repeat; background-position:top left; ' : false).' ">'.$this->eol;
+					$this->_menu .= '<div class="sub" style="width: '.($MDParameters[0]['MenuWidth'] - 2).'px;  background-color: #'.$ValButton['buttonColor'].'; '.($ValButton['img_name_background']!="" ? 'background-image: url('.$this->_path.'views/img/menu/'.$ValButton['img_name_background'].'); background-repeat:no-repeat; background-position:top left; ' : false).' ">'.$this->eol;
 					$this->_menu .= '<table class="megaDrownTable" cellpadding="0" cellspacing="0" width="100%">';
 					if($MDParameters[0]['stateTR1']=="on") {
 						$this->_menu .= '<tr style="height:'.$MDParameters[0]['heightTR1'].'px">';
@@ -1838,16 +1838,22 @@ $this->_html .= '<td>';
 		
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		$bg_menu = 0;
-		$bg_bout = 0;
-		$navlist_arrow = 0;
-		$sub_bg = 0;
 		
-		if(is_file(dirname(__FILE__).'/views/img/bg_menu'.$MDParameters[0]['extensionMenu'])) 		$bg_menu 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/bg_bout'.$MDParameters[0]['extensionBout'])) 		$bg_bout 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/navlist_arrow'.$MDParameters[0]['extensionArro'])) 	$navlist_arrow 	= 1;
-		if(is_file(dirname(__FILE__).'/views/img/sub_bg'.$MDParameters[0]['extensionBack'])) 			$sub_bg 		= 1;
 		
+		$paramerters['bg_menu'] = 0;
+		$paramerters['bg_bout'] = 0;
+		$paramerters['navlist_arrow'] = 0;
+		$paramerters['sub_bg'] = 0;
+		
+		if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'])) 		
+			$paramerters['bg_menu'] 		= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'])) 		
+			$paramerters['bg_bout'] 		= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'])) 	
+			$paramerters['navlist_arrow'] 	= 1;
+		if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'])) 			
+			$paramerters['sub_bg'] 		= 1;
+				
 		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
@@ -1890,10 +1896,10 @@ $this->_html .= '<td>';
 			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
 			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
 			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $bg_menu,
-			'bg_boutEvo' => $bg_bout,
-			'navlist_arrowEvo' => $navlist_arrow,
-			'sub_bgEvo' => $sub_bg )
+			'bg_menuEvo' => $paramerters['bg_menu'],
+			'bg_boutEvo' => $paramerters['bg_bout'],
+			'navlist_arrowEvo' => $paramerters['navlist_arrow'],
+			'sub_bgEvo' => $paramerters['sub_bg'] )
 		);				
 		
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
