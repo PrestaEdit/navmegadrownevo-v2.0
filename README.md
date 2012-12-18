@@ -7,4 +7,4 @@ http://www.prestashop.com/forums/topic/195259-module-gratuit-menu-mega-drown-evo
 
 Démonstration
 ====================
-http://www.prestaedit.com/demo/
+http://prestaedit.com/demo/menumegadrownevolution/
