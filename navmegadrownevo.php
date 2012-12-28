@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.0';
+	 	$this->version = '2.3.1';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -1289,11 +1289,11 @@ $this->_html .= '<td>';
 												<tr>
 													<td width="50%" align="center" style="font-weight: bold">
 														'.$this->l('Menu').'&nbsp;
-														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_menu'.$MDParameters[0]['extensionMenu'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
+														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
 													</td>
 													<td align="center" style="font-weight: bold">
 														'.$this->l('Button <i>(Height = 2 X Menu Height)</i>').'&nbsp;
-														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_bout'.$MDParameters[0]['extensionBout'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
+														<img src="../img/admin/disabled.gif" onclick="deletePicture(\'bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'].'\')" style="cursor: pointer" title="'.$this->l('delete').'">
 													</td>
 												</tr>';
 				$this->_html .= '<tr>';
@@ -1307,7 +1307,7 @@ $this->_html .= '<td>';
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
 				$this->_html .= '</tr>';
 				$this->_html .= '<tr>';
-				$this->_html .= '<td align="center" style="font-weight: bold">'.$this->l('Background Submenu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'sub_bg'.$MDParameters[0]['extensionBack'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('List Arrow').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'navlist_arrow'.$MDParameters[0]['extensionArro'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
+				$this->_html .= '<td align="center" style="font-weight: bold">'.$this->l('Background Submenu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('List Arrow').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
 				$this->_html .= '<tr>';
 				if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].''))
 					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].'"></td>';
