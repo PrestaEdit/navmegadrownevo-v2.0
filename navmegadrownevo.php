@@ -1424,7 +1424,7 @@ $this->_html .= '<td>';
 						foreach ($languages as $language) {
 							$this->_html .= '
 							<div id="detailSubTrDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-								<textarea class="rte" cols="100" rows="10" id="detailSubTr_'.$language['id_lang'].'" name="detailSubTr_'.$language['id_lang'].'">'.$tabDetailSubTrLang[$language['id_lang']].'</textarea>
+								<textarea class="rte" cols="100" rows="10" id="detailSubTr_'.$language['id_lang'].'" name="detailSubTr_'.$language['id_lang'].'">'.(isset($tabDetailSubTrLang[$language['id_lang']]) ?  $tabDetailSubTrLang[$language['id_lang']] : '').'</textarea>
 							</div>';
 						 }
 						$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'detailSubTrDiv', 'detailSubTrDiv', true);
@@ -1463,7 +1463,7 @@ $this->_html .= '<td>';
 					foreach ($languages as $language) {
 						$this->_html .= '
 						<div id="detailSubLeftDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-							<textarea class="rte" cols="100" rows="10" id="detailSubLeft_'.$language['id_lang'].'" name="detailSubLeft_'.$language['id_lang'].'">'.$tabDetailSubLeftLang[$language['id_lang']].'</textarea>
+							<textarea class="rte" cols="100" rows="10" id="detailSubLeft_'.$language['id_lang'].'" name="detailSubLeft_'.$language['id_lang'].'">'.(isset($tabDetailSubLeftLang[$language['id_lang']]) ?  $tabDetailSubLeftLang[$language['id_lang']] : '').'</textarea>
 						</div>';
 					 }
 					$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'detailSubLeftDiv', 'detailSubLeftDiv', true);
@@ -1484,7 +1484,7 @@ $this->_html .= '<td>';
 			foreach ($languages as $language) {
 				$this->_html .= '
 				<div id="detailSubDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-					<textarea class="rte" cols="100" rows="10" id="detailSub_'.$language['id_lang'].'" name="detailSub_'.$language['id_lang'].'">'.$tabDetailSubLang[$language['id_lang']].'</textarea>
+					<textarea class="rte" cols="100" rows="10" id="detailSub_'.$language['id_lang'].'" name="detailSub_'.$language['id_lang'].'">'.(isset($tabDetailSubLang[$language['id_lang']]) ?  $tabDetailSubLang[$language['id_lang']] : '').'</textarea>
 				</div>';
 			 }
 			$this->_html .= '</td><td width="250px" valign="top">';
