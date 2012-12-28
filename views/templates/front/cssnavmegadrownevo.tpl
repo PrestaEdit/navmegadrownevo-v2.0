@@ -10,7 +10,7 @@
 		margin : {/literal}{$MarginTopEvo}{literal}px 0px {/literal}{$MarginBottomEvo}{literal}px 0px;
 		height: {/literal}{$MenuHeightEvo}{literal}px;
 		font-size: {/literal}{$FontSizeMenuEvo}{literal}px;
-		background: #{/literal}{$GeneralColorEvo}{literal} {/literal}{if $bg_menuEvo==1}{literal}url({/literal}{$pathMDEvo}{literal}views/img/menu/bg_menu{/literal}{$extensionMenuEvo}{literal}) repeat-x{/literal}{/if}{literal};
+		background: #{/literal}{$GeneralColorEvo}{literal} {/literal}{if $bg_menuEvo.exist == 1}{literal}url({/literal}{$bg_menuEvo.path}{literal}) repeat-x{/literal}{/if}{literal};
 		padding-left : {/literal}{$PaddingLeftEvo}{literal}px;
 	}
 	ul#topnavEvo li a {
@@ -25,19 +25,20 @@
 	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover {
 		color: #{/literal}{$ColorFontMenuHoverEvo}{literal};
 	}
-	{/literal}{if $bg_boutEvo==1}{literal}
+	{/literal}{if $bg_boutEvo.exist==1}{literal}
 	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover { 
 		background-position: 0 -{/literal}{$MenuHeightEvo}{literal}px; 
 	}
 	{/literal}{/if}{literal}
 
 	ul#topnavEvo a.buttons {
-		{/literal}{if $bg_boutEvo==1}{literal}background: url({/literal}{$pathMDEvo}{literal}views/img/menu/bg_bout{/literal}{$extensionBoutEvo}{literal}) repeat-x;{/literal}{/if}{literal}
+		{/literal}
+		{if $bg_boutEvo.exist == 1}{literal}background: url({/literal}{$bg_boutEvo.path}{literal}) repeat-x{/literal}{/if}{literal};
 	}
 
 	ul#topnavEvo li .sub {
 		top: {/literal}{$MenuHeightEvo}{literal}px;
-		background: #{/literal}{$GeneralColorEvo}{literal} {/literal}{if $sub_bgEvo==1}{literal}url({/literal}{$pathMDEvo}{literal}views/img/menu/sub_bg{/literal}{$extensionBackEvo}{literal}) repeat-x{/literal}{/if}{literal};
+		background: #{/literal}{$GeneralColorEvo}{literal} {/literal}{if $sub_bgEvo.exist == 1}{literal}url({/literal}{$sub_bgEvo.path}{literal}) repeat-x{/literal}{/if}{literal};
 	}
 	.megaDrownTR1 {
 		background-color:#{/literal}{$bgColorTR1Evo}{literal};
@@ -74,8 +75,8 @@
 		
 	}
 	ul#topnavEvo .sub ul li a {
-		{/literal}{if $navlist_arrowEvo==1}{literal}
-		background: url({/literal}{$pathMDEvo}{literal}views/img/menu/navlist_arrow{/literal}{$extensionArroEvo}{literal}) no-repeat 4px 10px;
+		{/literal}{if $navlist_arrowEvo.exist == 1}{literal}
+		background: url({/literal}{$navlist_arrowEvo.path}{literal}) no-repeat 4px 10px;
 		{/literal}{/if}{literal}
 		padding: {/literal}{$VerticalPaddingEvo}{literal}px 5px {/literal}{$VerticalPaddingEvo}{literal}px 15px;
 		color: #{/literal}{$ColorFontSubSubMenuEvo}{literal};
