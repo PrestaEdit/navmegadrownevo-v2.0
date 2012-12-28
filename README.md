@@ -11,4 +11,7 @@ http://prestaedit.com/demo/menumegadrownevolution/
 
 Téléchargement
 ====================
-Dernière version: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.0.zip
+Dernière version: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.1.zip
+
+Anciennes versions:
+* 2.3.0: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.0.zip
