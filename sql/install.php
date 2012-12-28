@@ -117,5 +117,5 @@
 	(MenuWidth, MenuHeight, MinButtonWidth, GeneralColor, 
 	FontSizeMenu, FontSizeSubMenu, FontSizeSubSubMenu, 
 	ColorFontMenu, ColorFontSubMenu, ColorFontSubSubMenu, VerticalPadding) 
-	VALUES (967, 45, 100, "4e4e4e", 12, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
+	VALUES (980, 45, 100, "4e4e4e", 12, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
 	

@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.2.5';
+	 	$this->version = '2.3.0';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -207,9 +207,9 @@ class navmegadrownEvo extends Module
 						  'id_button'=>Tools::getValue('ButttonIdToUpdate'), 
 						  'id_lang'=>$language['id_lang'], 
 						  'name_button'=>addslashes(Tools::getValue('ButtonNameEdit_'.$language['id_lang'])), 
-						  'detailSub'=>htmlentities(addslashes($infoSub[$language['id_lang']]['detailSub'])),  
-						  'detailSubLeft'=>htmlentities(addslashes($infoSub[$language['id_lang']]['detailSubLeft'])),  
-						  'detailSubTR'=>htmlentities(addslashes($infoSub[$language['id_lang']]['detailSubTR']))
+						  'detailSub'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSub']) ? $infoSub[$language['id_lang']]['detailSub'] : ''))),
+						  'detailSubLeft'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSubLeft']) ? $infoSub[$language['id_lang']]['detailSubLeft'] : ''))),
+						  'detailSubTR'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSubTR']) ? $infoSub[$language['id_lang']]['detailSubTR'] : '')))
 						),
 						'INSERT'
 					);
@@ -609,13 +609,16 @@ class navmegadrownEvo extends Module
 		tbl.id_button='.$IdButton.' ORDER BY tbl.num_ligne ASC 
 		' );
 	}	
-	static public function getProductsUnder($IdCat, $IdLang) {
+	static public function getProductsUnder($id_category, $id_lang, $id_shop = 1) {	
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM ('._DB_PREFIX_.'category_product tb INNER JOIN '._DB_PREFIX_.'product_lang tbl 
-		ON (tb.id_product=tbl.id_product)) INNER JOIN '._DB_PREFIX_.'product tbll on (tb.id_product=tbll.id_product) 
-		WHERE tb.id_category='.$IdCat.' and tbll.active=1 and tbl.id_lang='.$IdLang.' 
-		ORDER BY tbl.name ASC 
+		FROM ('._DB_PREFIX_.'category_product cp INNER JOIN '._DB_PREFIX_.'product_lang pl 
+		ON (cp.id_product=pl.id_product)) INNER JOIN '._DB_PREFIX_.'product p on (cp.id_product=p.id_product) 
+		WHERE cp.id_category='.(int)$id_category.' 
+		AND p.active=1 
+		AND pl.id_lang = '.(int)$id_lang.'
+		AND pl.id_shop = '.(int)$id_shop.'
+		ORDER BY pl.name ASC 
 		' );
 	}	
 	static public function getButtonLinksCustomUnder($IdButton, $IdParent, $idLang) {
@@ -824,7 +827,7 @@ $this->_html .= '<td>';
 						$("#formdesign").submit();					
 					}
 				}
-				var wait = "<div widht=\'100%\' align=\'center\' style=\'height : 190px\'><BR><BR><BR><BR><img src=\''.$this->_path.'views/img/ajaxLoading.gif\'><BR>'.$this->l('Loading').'</div>";
+				var wait = "<div widht=\'100%\' align=\'center\' style=\'height : 190px\'><br /><br /><br /><br /><img src=\''.$this->_path.'views/img/ajaxLoading.gif\'><br />'.$this->l('Loading').'</div>";
 				function displayDetailMenu() {
 					$.ajax({
 					  method : "GET",
@@ -1298,7 +1301,7 @@ $this->_html .= '<td>';
 					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
-				if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout'.$MDParameters[0]['extensionBout']))
+				if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout']))
 					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
@@ -1306,11 +1309,11 @@ $this->_html .= '<td>';
 				$this->_html .= '<tr>';
 				$this->_html .= '<td align="center" style="font-weight: bold">'.$this->l('Background Submenu').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'sub_bg'.$MDParameters[0]['extensionBack'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td><td align="center" style="font-weight: bold">'.$this->l('List Arrow').'&nbsp;<img src="../img/admin/disabled.gif" onclick="deletePicture(\'navlist_arrow'.$MDParameters[0]['extensionArro'].'\')" style="cursor: pointer" title="'.$this->l('delete').'"></td></tr>';
 				$this->_html .= '<tr>';
-				if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg'.$MDParameters[0]['extensionBack'].''))
+				if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].''))
 					$this->_html .= '<td width="50%" align="center"><img src="'.$this->_path.'views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
-				if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow'.$MDParameters[0]['extensionArro'].''))
+				if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'].''))
 					$this->_html .= '<td align="center"><img src="'.$this->_path.'views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'].'"></td>';
 				else
 					$this->_html .= '<td width="50%" align="center">&nbsp;</td>';
@@ -1321,11 +1324,11 @@ $this->_html .= '<td>';
 		$this->_html .= '<input type="hidden" id="FileToDelete" name="FileToDelete">';
 		$this->_html .= '<input type="hidden" id="ActionFile" name="ActionFile">';
 		$this->_html .= '</form>';
-		$this->_html .= '</fieldset><BR>';
+		$this->_html .= '</fieldset><br />';
 		$this->_html .= '
-		<fieldset>
+		<fieldset style="float: left; margin-right: 25px;">
 			<legend><img src="../img/admin/add.gif" alt="" title="" />'.$this->l('Add button').'&nbsp;</legend>';
-		$this->_html .= '<form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formnewbutton" id="formnewbutton">';
+		$this->_html .= '<br /><form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formnewbutton" id="formnewbutton">';
 		$this->_html .= '<table cellpadding="0"><tr><td>'.$this->l('Name').' : </td><td>';
 		foreach ($languages as $language) {
 			$this->_html .= '
@@ -1335,16 +1338,16 @@ $this->_html .= '<td>';
 		 }
 		$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'Buttons', 'Buttons', true);
 		$this->_html .= '</td></tr>';
-		$this->_html .= '</table>';
+		$this->_html .= '</table><br /><br />';
 		$this->_html .= '<p align="center"><input name="SubmitButton" type="submit" value="'.$this->l('  Save  ').'" class="button"></p>';
 		$this->_html .= '<input type="hidden" id="ButtonIdAction" name="ButtonIdAction" value="">';
 		$this->_html .= '<input type="hidden" id="Action" name="Action" value="">';
 		$this->_html .= '</form>';
-		$this->_html .= '</fieldset><BR>';
+		$this->_html .= '</fieldset>';
 		$this->_html .= '<fieldset>
 			<legend><img src="'.$this->_path.'logo.gif" alt="" title="" />'.$this->l('MeGa DrOwN mEnU organization').'&nbsp;';
 		$this->_html .= '</legend>';
-		$this->_html .= '<form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formorganizebutton" id="formorganizebutton"><BR>';
+		$this->_html .= '<form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formorganizebutton" id="formorganizebutton"><br />';
 		$this->_html .= '<div width="100%"><ul id="sortable">';
 		if(sizeof($MDConfiguration)) {
 			foreach($MDConfiguration as $kMDConf=>$ValMDConf) {
@@ -1358,12 +1361,12 @@ $this->_html .= '<td>';
 				$tabButtonsOrganizate[] = "button_".$ValMDConf['id_button'];
 			}
 		}
-		$this->_html .= '</ul></div><BR><BR><BR><BR>';
+		$this->_html .= '</ul></div><br /><br /><br /><br />';
 		$this->_html .= '<p align="center"><input name="SubmitButtonOrganization" type="submit" value="'.$this->l('  Save  ').'" class="button"></p>';
 		$this->_html .= '<input type="hidden" id="Organisation" name="Organisation" value="'.implode(',',$tabButtonsOrganizate).'">';
 		$this->_html .= '<input type="hidden" value="'.$ButtonIdInEdit.'" id="ButttonIdToUpdateOrganization" name="ButttonIdToUpdateOrganization">';
 		$this->_html .= '</form>';
-		$this->_html .= '</fieldset><BR>';
+		$this->_html .= '</fieldset><br />';
 		$this->_html .= '<script>
 						$(function() {
 							$("#sortable").sortable({ opacity: 0.6, scroll: true ,position:"left", revert: true , cursor: "move", update: function() {
@@ -1414,32 +1417,31 @@ $this->_html .= '<td>';
 
 			$this->_html .= '<fieldset>
 				<legend><img src="'.$this->_path.'views/img/parametres.gif">'.$this->l('Parameters').'&nbsp;';
-			$this->_html .= '</legend><BR>';
-			$this->_html .= '<form enctype="multipart/form-data" id="form_subTR" name="form_subTR" method="post" action="" style="display : inline">
+			$this->_html .= '</legend><br />';
+			$this->_html .= '<form enctype="multipart/form-data" id="form_subTR" name="form_subTR" method="post" action="" style="display : inline;float: left; margin-right: 20px;">
 							 <input type="hidden" name="idButton" value="'.$ButtonIdInEdit.'">
 									<div style="width: 100%;">
-										<table cellpadding="0" cellspacing="0" width="100%" class="table">
+										<table cellpadding="0" cellspacing="0" width="510px" class="table">
 										<tr><TH colspan="2" align="center">'.$this->l('Line top').'</TH></tr>';
 						$this->_html .= '<tr><td colspan="2" width="100%">';
 						foreach ($languages as $language) {
 							$this->_html .= '
 							<div id="detailSubTrDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-								<textarea class="rte" cols="100" rows="10" id="detailSubTr_'.$language['id_lang'].'" name="detailSubTr_'.$language['id_lang'].'">'.(isset($tabDetailSubTrLang[$language['id_lang']]) ?  $tabDetailSubTrLang[$language['id_lang']] : '').'</textarea>
+								<textarea class="rte" cols="90" rows="10" id="detailSubTr_'.$language['id_lang'].'" name="detailSubTr_'.$language['id_lang'].'">'.(isset($tabDetailSubTrLang[$language['id_lang']]) ?  $tabDetailSubTrLang[$language['id_lang']] : '').'</textarea>
 							</div>';
 						 }
 						$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'detailSubTrDiv', 'detailSubTrDiv', true);
-						$this->_html .= '<BR><BR>
+						$this->_html .= '<br /><br />
 						';
 						$this->_html .= '</td></tr>';
 						$this->_html .= '<tr><td colspan="2" align="center"><input type="submit" value="'.$this->l('  Save  ').'" class="button" name="SubmitDetailSubTr"></td></tr>
 									</table>
 									</div>
 							 </form>
-							 <BR>
 							';
-			$this->_html .= '<form enctype="multipart/form-data" id="form_upload_picture" name="form_upload_picture" method="post" action="" style="display : inline">
+			$this->_html .= '<form enctype="multipart/form-data" id="form_upload_picture" name="form_upload_picture" method="post" action="" style="display : inline; float: left; margin-right: 20px;">
 									<div style="width: 100%;">
-										<table cellpadding="0" cellspacing="0" width="100%" class="table">
+										<table cellpadding="0" cellspacing="0" width="510px" class="table">
 										<tr><TH colspan="2" align="center">'.$this->l('Left column').'</TH></tr>
 										<tr><td width="50%">
 										&nbsp;'.$this->l('Select your picture to upload').'&nbsp;<input type="file" id="PictureFile" name="PictureFile" style="font-size : 10px">
@@ -1447,9 +1449,9 @@ $this->_html .= '<td>';
 										<input type="hidden" value="UploadPicture" name="ActionPicture" id="ActionPicture">
 										<input type="hidden" name="idButton" value="'.$ButtonIdInEdit.'">
 										<input type="hidden" name="NamePicture" value="'.$ButtonDetail[0]['img_name'].'">
-										<BR><BR>
+										<br /><br />
 										&nbsp;'.$this->l('Link').' : <input type="text" id="imgLink" name="imgLink" value="'.urldecode($ButtonDetail[0]['img_link']).'" style="width: 310px">
-										<BR><BR>
+										<br /><br />
 										</td><td align="center">';
 										if($ButtonDetail[0]['img_name'] != "") {
 											$this->_html .= '<table width="50%" cellpadding="0" cellspacing="0"><tr><td width="50%" align="right" valign="top">';
@@ -1463,43 +1465,42 @@ $this->_html .= '<td>';
 					foreach ($languages as $language) {
 						$this->_html .= '
 						<div id="detailSubLeftDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-							<textarea class="rte" cols="100" rows="10" id="detailSubLeft_'.$language['id_lang'].'" name="detailSubLeft_'.$language['id_lang'].'">'.(isset($tabDetailSubLeftLang[$language['id_lang']]) ?  $tabDetailSubLeftLang[$language['id_lang']] : '').'</textarea>
+							<textarea class="rte" cols="90" rows="10" id="detailSubLeft_'.$language['id_lang'].'" name="detailSubLeft_'.$language['id_lang'].'">'.(isset($tabDetailSubLeftLang[$language['id_lang']]) ?  $tabDetailSubLeftLang[$language['id_lang']] : '').'</textarea>
 						</div>';
 					 }
 					$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'detailSubLeftDiv', 'detailSubLeftDiv', true);
-					$this->_html .= '<BR><BR>
+					$this->_html .= '<br /><br />
 					';
 					$this->_html .= '</td></tr>';
 					$this->_html .= '<tr><td colspan="2" align="center"><input type="submit" value="'.$this->l('  Save  ').'" class="button"></td></tr>
 									</table>
 									</div>
 							 </form>
-							 <BR>
 							';
 			$this->_html .= '
 			<form enctype="multipart/form-data" id="form_upload_picture" name="formDetailSub" method="post" action="" style="display : inline">
-			<table cellpadding="0" cellspacing="0" width="100%" class="table">
+			<table cellpadding="0" cellspacing="0" width="510px" class="table">
 			<tr><TH align="center" colspan="2">'.$this->l('Right column').'</TH></tr>
 			<tr><td>';
 			foreach ($languages as $language) {
 				$this->_html .= '
 				<div id="detailSubDiv_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').';float: left;" class="divLang">
-					<textarea class="rte" cols="100" rows="10" id="detailSub_'.$language['id_lang'].'" name="detailSub_'.$language['id_lang'].'">'.(isset($tabDetailSubLang[$language['id_lang']]) ?  $tabDetailSubLang[$language['id_lang']] : '').'</textarea>
+					<textarea class="rte" cols="90" rows="10" id="detailSub_'.$language['id_lang'].'" name="detailSub_'.$language['id_lang'].'">'.(isset($tabDetailSubLang[$language['id_lang']]) ?  $tabDetailSubLang[$language['id_lang']] : '').'</textarea>
 				</div>';
 			 }
 			$this->_html .= '</td><td width="250px" valign="top">';
 			$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'detailSubDiv', 'detailSubDiv', true);
-			$this->_html .= '<BR><BR>
+			$this->_html .= '<br /><br />
 			';
 			$this->_html .= '</td></tr>
 							<tr><td align="center" colspan="2"><input type="hidden" name="idButton" value="'.$ButtonIdInEdit.'">
 							<input type="submit" value="'.$this->l('  Save  ').'" class="button" name="SubmitDetailSub"></td></tr>
-							</table><BR></form>';
-			$this->_html .= '<BR>
+							</table><br /></form>';
+			$this->_html .= '<br /><br /><br /><br /><br /><br /><br /><br />
 			<table cellpadding="0" cellspacing="0" width="100%" class="table">
 			<tr><TH align="center" colspan="2">'.$this->l('Center column - Links detail').'</TH></tr>
-			</table><BR>';
-			$this->_html .= '<form enctype="multipart/form-data" id="form_upload_picture_background" name="form_upload_picture_background" method="post" action="" style="display : inline">
+			</table><br />';
+			$this->_html .= '<form enctype="multipart/form-data" id="form_upload_picture_background" name="form_upload_picture_background" method="post" action="" style="display : inline; ">
 									<div style="width: 100%;">
 										<table cellpadding="0" cellspacing="0" width="100%" class="table">
 										<tr><td width="50%">
@@ -1518,11 +1519,11 @@ $this->_html .= '<td>';
 											$this->_html .= '</td></tr></table>';
 										}
 					$this->_html .= '</td></tr>'.$this->eol;
-					$this->_html .= '<tr><td align="center"><input type="submit" value="'.$this->l('  Send  ').'" class="button"></td></tr>
+					$this->_html .= '<tr><td align="center"><input type="submit" value="'.$this->l('  Save  ').'" class="button"></td></tr>
 									</table>
 									</div>
 							 </form>
-							 <BR>
+							 <br />
 							';
 			
 			$this->_html .='<form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formbuttonparameters" id="formbuttonparameters">';
@@ -1585,13 +1586,13 @@ $this->_html .= '<td>';
 			}
 			$this->_html .= $this->displayFlagsMD($languages, $defaultLanguage, 'CustomName', 'CustomName', true);
 			$this->_html .= '&nbsp;<input type="button" value="'.$this->l('Add').'" onclick=\'addCustomMenu("'.$ButtonIdInEdit.'")\' class="button">&nbsp;</td></tr>';
-			$this->_html .= '<tr><td colspan="2"><BR>';
+			$this->_html .= '<tr><td colspan="2"><br />';
 			$this->_html .= '<div id="customMenu" width="100%">';
 			$this->_html .= '</div>';
 			$this->_html .= '</td></tr>';
 			$this->_html .= '</table>';
 			$this->_html .= '</form>';
-			$this->_html .= '</fieldset><BR>';
+			$this->_html .= '</fieldset><br />';
 			$this->_html .= '<script>';
 			$this->_html .= '$(document).ready(function() { displayDetailMenu(); });';
 			$this->_html .= '</script>';
@@ -1680,7 +1681,7 @@ $this->_html .= '<td>';
 				$LinkButton = $this->getButtonLinks($ValButton['id_button']);
 				(!array_key_exists(0 , $LinkButton)) ? $linkButton = "#" : $linkButton = $LinkButton[0]['link'];
 				$this->_menu .= '<li style="background-color: #'.$ValButton['buttonColor'].'" class="liBouton">'.$this->eol;
-				strpos(strtolower($ValButton['name_button']), "<br>") ? $decal="margin-top : -5px;" : $decal="" ;
+				strpos(strtolower($ValButton['name_button']), "<br />") ? $decal="margin-top : -5px;" : $decal="" ;
 				$this->_menu .= '<div'.($decal!=0 ? ' style="'.$decal.'"' : '').'><a href="'.$linkButton.'" '.($linkButton=="#" ? "onclick='return false'" : false).' class="buttons" '.(in_array($ActiveCategory, $tabIdLinkCat[$ValButton['id_button']]) || in_array(basename($_SERVER['REQUEST_URI']), $tabLinkCustom[$ValButton['id_button']]) || in_array(basename($_SERVER['REQUEST_URI']), $tabLinkButton[$ValButton['id_button']]) ? 'style="background-position : 0 -'.$MDParameters[0]['MenuHeight'].'px; color: #'.$MDParameters[0]['ColorFontMenuHover'].'"' : false ).'>'.$ValButton['name_button'].'</a></div>'.$this->eol;
 				$CatMenu 	= array();
 				$CatMenu 	= $this->getButtonLinksCat($ValButton['id_button']);
@@ -1744,7 +1745,7 @@ $this->_html .= '<td>';
 							if($ValButton['img_link'] != '')
 								$this->_menu .= '</a>';
 						}
-						$this->_menu .= html_entity_decode($ValButton['detailSubLeft']).'</td>';
+						$this->_menu .= '<br />'.html_entity_decode($ValButton['detailSubLeft']).'</td>';
 					}
 					$this->_menu .= '<td class="megaDrownTD2" valign="top">'.$this->eol;
 					$this->_menu .= '<table class="MegaEvoLinks" style="border:0px">'.$this->eol;
@@ -1766,26 +1767,37 @@ $this->_html .= '<td>';
 											$NameSubstitute = $this->getNameSubstitute($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
 											$Category = new Category(intval($ValMenu['id_link_cat']), intval($this->context->cookie->id_lang));
 											$rewrited_url = $this->getCategoryLinkMD($ValMenu['id_link_cat'], $Category->link_rewrite);
-											$this->_menu .= '<li class="stitle"><a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a></li>'.$this->eol;
+											$this->_menu .= '	<li class="stitle">
+																					<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a>
+																				</li>'.$this->eol;
 
-											if($ValMenu['view_products'] != 'on') {
+											if($ValMenu['view_products'] != 'on') 
+											{
 												$NameCategoryUnder = array();
 												$NameCategoryUnder = $this->getNameCategoryUnder($ValMenu['id_link_cat'], $ValButton['id_button']);
-												if(sizeof($NameCategoryUnder)) {
-													foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) {
+												if(sizeof($NameCategoryUnder)) 
+												{
+													foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) 
+													{
 														$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
 														$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
 														$NameCategoryUnder = $this->getNameCategory($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
 														$NameSubstitute = $this->getNameSubstitute($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
-														$this->_menu .= '<li><a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategoryUnder[0]['name']).'</a></li>'.$this->eol;
+														$this->_menu .= '	<li>
+																								<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategoryUnder[0]['name']).'
+																								</a>
+																							</li>'.$this->eol;
 													}
 												}
 											}
-											else {
+											else 
+											{
 												$NameProductsUnder = array();
-												$NameProductsUnder = $this->getProductsUnder($ValMenu['id_link_cat'], $this->context->cookie->id_lang);
-												if(sizeof($NameProductsUnder)) {
-													foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd) {
+												$NameProductsUnder = $this->getProductsUnder($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $this->context->shop->id);
+												if(sizeof($NameProductsUnder)) 
+												{
+													foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd) 
+													{
 														$Products = new Product(intval($ValUnderProd['id_product']), true, intval($this->context->cookie->id_lang));
 														$rewrited_url = $Products->getLink();
 														$NameProduct = $Products->name;
@@ -1832,28 +1844,34 @@ $this->_html .= '<td>';
 			$this->_menu .= '</div>'.$this->eol;
 		}
 	}	
+	
+	private function checkIfImageExist($file_name = '', $ext = 'png')
+	{
+		$image = array();
+		$image['exist'] = 0;
+		$image['path'] = '';
+		
+		if(is_file(dirname(__FILE__).'/views/img/menu/'.$file_name.'-'.$this->context->shop->id.$ext)) 	
+		{				
+			$image['exist'] = 1;
+			$image['path'] = $this->_path.'views/img/menu/'.$file_name.'-'.$this->context->shop->id.$ext;
+		}
+		
+		return $image;	
+	}
+	
 	public function hookDisplayTop($param) 
 	{	
 		$this->makeMegaDrown($this->context->cookie->id_lang);
 		
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		
-		
-		$paramerters['bg_menu'] = 0;
-		$paramerters['bg_bout'] = 0;
-		$paramerters['navlist_arrow'] = 0;
-		$paramerters['sub_bg'] = 0;
-		
-		if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'])) 		
-			$paramerters['bg_menu'] 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'])) 		
-			$paramerters['bg_bout'] 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'])) 	
-			$paramerters['navlist_arrow'] 	= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'])) 			
-			$paramerters['sub_bg'] 		= 1;
 				
+		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
+		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
+		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
+		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
+						
 		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
@@ -1879,10 +1897,6 @@ $this->_html .= '<td>';
 			'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
 			'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
 			'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
-			'extensionMenuEvo' => $MDParameters[0]['extensionMenu'],
-			'extensionBoutEvo' => $MDParameters[0]['extensionBout'],
-			'extensionBackEvo' => $MDParameters[0]['extensionBack'],
-			'extensionArroEvo' => $MDParameters[0]['extensionArro'],
 			'widthTD1Evo' => $MDParameters[0]['widthTD1'],
 			'widthTD3Evo' => $MDParameters[0]['widthTD3'],
 			'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
@@ -1896,10 +1910,10 @@ $this->_html .= '<td>';
 			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
 			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
 			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $paramerters['bg_menu'],
-			'bg_boutEvo' => $paramerters['bg_bout'],
-			'navlist_arrowEvo' => $paramerters['navlist_arrow'],
-			'sub_bgEvo' => $paramerters['sub_bg'] )
+			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
+			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
+			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
+			'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
 		);				
 		
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
@@ -1911,20 +1925,11 @@ $this->_html .= '<td>';
   {
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		$parameters = array();
-		$paramerters['bg_menu'] = 0;
-		$paramerters['bg_bout'] = 0;
-		$paramerters['navlist_arrow'] = 0;
-		$paramerters['sub_bg'] = 0;
 		
-		if(is_file(dirname(__FILE__).'/views/img/menu/bg_menu-'.$this->context->shop->id.$MDParameters[0]['extensionMenu'])) 		
-			$paramerters['bg_menu'] 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/bg_bout-'.$this->context->shop->id.$MDParameters[0]['extensionBout'])) 		
-			$paramerters['bg_bout'] 		= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/navlist_arrow-'.$this->context->shop->id.$MDParameters[0]['extensionArro'])) 	
-			$paramerters['navlist_arrow'] 	= 1;
-		if(is_file(dirname(__FILE__).'/views/img/menu/sub_bg-'.$this->context->shop->id.$MDParameters[0]['extensionBack'])) 			
-			$paramerters['sub_bg'] 		= 1;
+		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
+		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
+		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
+		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
 		
 		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
 		{
@@ -1951,10 +1956,6 @@ $this->_html .= '<td>';
 			'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
 			'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
 			'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
-			'extensionMenuEvo' => $MDParameters[0]['extensionMenu'],
-			'extensionBoutEvo' => $MDParameters[0]['extensionBout'],
-			'extensionBackEvo' => $MDParameters[0]['extensionBack'],
-			'extensionArroEvo' => $MDParameters[0]['extensionArro'],
 			'widthTD1Evo' => $MDParameters[0]['widthTD1'],
 			'widthTD3Evo' => $MDParameters[0]['widthTD3'],
 			'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
@@ -1968,10 +1969,10 @@ $this->_html .= '<td>';
 			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
 			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
 			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $paramerters['bg_menu'],
-			'bg_boutEvo' => $paramerters['bg_bout'],
-			'navlist_arrowEvo' => $paramerters['navlist_arrow'],
-			'sub_bgEvo' => $paramerters['sub_bg'] )
+			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
+			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
+			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
+			'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
 		);				
 		
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
