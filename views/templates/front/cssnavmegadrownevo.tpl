@@ -1,6 +1,3 @@
-<script type="text/javascript" src="{$pathMDEvo}/views/js/jquery.hoverIntent.minified.js"></script>
-<script type="text/javascript" src="{$pathMDEvo}/views/js/navmegadrownEvo.js"></script>
-<link href="{$pathMDEvo}/views/css/navmegadrownEvo.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 	{literal}
 	.container {
@@ -26,8 +23,8 @@
 		color: #{/literal}{$ColorFontMenuHoverEvo}{literal};
 	}
 	{/literal}{if $bg_boutEvo.exist==1}{literal}
-	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover { 
-		background-position: 0 -{/literal}{$MenuHeightEvo}{literal}px; 
+	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover {
+		background-position: 0 -{/literal}{$MenuHeightEvo}{literal}px;
 	}
 	{/literal}{/if}{literal}
 
@@ -52,11 +49,11 @@
 	.megaDrownTD3 {
 		background-color:#{/literal}{$bgColorTD3Evo}{literal};
 	}
-	
+
 	ul#topnavEvo li .sub {
 		padding-top: 10px;
 	}
-	
+
 	ul#topnavEvo li .sub ul{
 		width: {/literal}{$ColumnWidthEvo}{literal}px;
 		margin-left: 10px;
@@ -72,7 +69,7 @@
 	}
 	ul#topnavEvo .sub ul li.stitle a:hover {
 		color: #{/literal}{$ColorFontSubMenuHoverEvo}{literal};
-		
+
 	}
 	ul#topnavEvo .sub ul li a {
 		{/literal}{if $navlist_arrowEvo.exist == 1}{literal}
