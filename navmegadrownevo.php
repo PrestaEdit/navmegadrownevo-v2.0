@@ -6,7 +6,7 @@
  * @author     	PrestaEdit <j.danse@prestaedit.com> (since 2.0)
  * @author     	DevForEver (special thanks to him)
  * @copyright  	2012 PrestaEdit
- * @version   	2.0	
+ * @version   	2.0
  * @link       	http://www.prestaedit.com/
  * @since      	File available since Release 1.0
 */
@@ -14,50 +14,50 @@
 // Security
 if (!defined('_PS_VERSION_'))
 	exit;
-	
+
 // Checking compatibility with older PrestaShop and fixing it
 if (!defined('_MYSQL_ENGINE_'))
 	define('_MYSQL_ENGINE_', 'MyISAM');
 
-class navmegadrownEvo extends Module 
+class navmegadrownEvo extends Module
 {
 	private $_style = '';
 	private $_menu = '';
 	private $_html = '';
-	
+
 	private $eol = "\r\n";
-	
-	public function __construct() 
+
+	public function __construct()
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
 	 	$this->version = '2.3.1';
-		$this->author = 'PrestaEdit';		
-	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
+		$this->author = 'PrestaEdit';
+	  $this->ps_versions_compliancy['min'] = '1.5.0.1';
 		$this->need_instance = 0;
-		
+
 		parent::__construct();
-		
+
 		$this->displayName = $this->l('MeGa DrOwN mEnU Evolution');
 		$this->description = $this->l('Add a MeGa DrOwN mEnU Evolution.');
 		$this->confirmUninstall = $this->l('Are you sure you want to delete this module ?');
 		$this->allow = intval(Configuration::get('PS_REWRITING_SETTINGS'));
 	}
-	
+
 	public function install()
 	{
 		// Install SQL
 		include(dirname(__FILE__).'/sql/install.php');
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
-				return false;		
-		
-		// Install Module  
+				return false;
+
+		// Install Module
    	return 	parent::install()
-						&& $this->registerHook('displayTop')			
-						&& $this->registerHook('displayHeader');					
+						&& $this->registerHook('displayTop')
+						&& $this->registerHook('displayHeader');
 	}
-	
+
 	public function uninstall()
 	{
 		// Uninstall SQL
@@ -65,9 +65,9 @@ class navmegadrownEvo extends Module
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
 				return false;
-				
+
 		Configuration::deleteByName('MOD_MEGADROWN_ITEMS');
-		
+
 		// Uninstall Module
 		if (!parent::uninstall() ||
 		    !$this->unregisterHook('displayTop') ||
@@ -76,7 +76,7 @@ class navmegadrownEvo extends Module
 
 		return true;
 	}
-	
+
 	public function getContent() {
 		global $ButtonIdInEdit;
 		$defaultLanguage = intval(Configuration::get('PS_LANG_DEFAULT'));
@@ -85,8 +85,8 @@ class navmegadrownEvo extends Module
 		$output = "";
 		$errors = array();
 		$errorsNb = 0;
-		
-		if(Tools::isSubmit('SubmitButton')) 
+
+		if(Tools::isSubmit('SubmitButton'))
 		{
 			$result = Db::getInstance()->autoExecute(
 				_DB_PREFIX_.'admevo_button',
@@ -103,28 +103,28 @@ class navmegadrownEvo extends Module
 					$result = Db::getInstance()->autoExecute(
 						_DB_PREFIX_.'admevo_button_lang',
 						array(
-						  'id_button'=>$IdButton, 
-						  'id_lang'=>$language['id_lang'], 
+						  'id_button'=>$IdButton,
+						  'id_lang'=>$language['id_lang'],
 						  'name_button'=>addslashes(Tools::getValue('ButtonName_'.$language['id_lang']))
 						),
 						'INSERT'
 					);
 					if(!$result) $errorsNb++;
 				 }
-			}			
+			}
 			if($errorsNb!=0)
 				$output .= $this->displayError($this->l('Unable to add this button'));
 			else
 				$output .= $this->displayConfirmation($this->l('Button added'));
 		}
-		if(Tools::isSubmit('SubmitButtonParameters')) 
+		if(Tools::isSubmit('SubmitButtonParameters'))
 		{
 			$result = Db::getInstance()->autoExecute(
-				_DB_PREFIX_.'admevo_button', 
+				_DB_PREFIX_.'admevo_button',
 				array(
-					"buttonColor"=>(Tools::getValue('noColorButton')=="on" ? "" : Tools::getValue('buttonColor')) 
-				), 
-				"UPDATE", "id_button=".Tools::getValue('ButttonIdToUpdate')); 
+					"buttonColor"=>(Tools::getValue('noColorButton')=="on" ? "" : Tools::getValue('buttonColor'))
+				),
+				"UPDATE", "id_button=".Tools::getValue('ButttonIdToUpdate'));
 
 			Db::getInstance()->delete(_DB_PREFIX_.'admevo_button_link_cat', "id_button = ".Tools::getValue('ButttonIdToUpdate'));
 			Db::getInstance()->delete(_DB_PREFIX_.'admevo_button_organization', "id_button = ".Tools::getValue('ButttonIdToUpdate'));
@@ -137,9 +137,9 @@ class navmegadrownEvo extends Module
 						_DB_PREFIX_.'admevo_button_link_cat',
 						array(
 						  'id_button'=>Tools::getValue('ButttonIdToUpdate'),
-						  'id_link_cat'=>$cat, 
-						  'num_ligne'=>$numLigneCat, 
-						  'num_column'=>$numColumnCat, 
+						  'id_link_cat'=>$cat,
+						  'num_ligne'=>$numLigneCat,
+						  'num_column'=>$numColumnCat,
 						  'view_products'=>Tools::getValue('viewProducts_'.$cat)
 						),
 
@@ -154,7 +154,7 @@ class navmegadrownEvo extends Module
 							_DB_PREFIX_.'admevo_button_organization',
 							array(
 							  'id_button' => Tools::getValue('ButttonIdToUpdate'),
-							  'id_link_cat' => $idCat, 
+							  'id_link_cat' => $idCat,
 							  'state' => Tools::getValue('State_'.$idCat),
 							  'num_ligne' => $vPost
 							),
@@ -166,8 +166,8 @@ class navmegadrownEvo extends Module
 									_DB_PREFIX_.'admevo_button_langcat',
 									array(
 									  'id_button' => Tools::getValue('ButttonIdToUpdate'),
-									  'id_cat' => $idCat, 
-									  'id_lang' => $language['id_lang'], 
+									  'id_cat' => $idCat,
+									  'id_lang' => $language['id_lang'],
 									  'name_substitute' => addslashes(Tools::getValue('textSubstitute_'.$idCat."_".$language['id_lang']))
 									),
 									'INSERT'
@@ -177,7 +177,7 @@ class navmegadrownEvo extends Module
 					}
 				 }
 			  if(!$result) $errorsNb++;
-			}		
+			}
 			Db::getInstance()->delete(_DB_PREFIX_.'admevo_button_link', "id_button = ".Tools::getValue('ButttonIdToUpdate'));
 			$result = Db::getInstance()->autoExecute(
 				_DB_PREFIX_.'admevo_button_link',
@@ -204,9 +204,9 @@ class navmegadrownEvo extends Module
 					$result = Db::getInstance()->autoExecute(
 						_DB_PREFIX_.'admevo_button_lang',
 						array(
-						  'id_button'=>Tools::getValue('ButttonIdToUpdate'), 
-						  'id_lang'=>$language['id_lang'], 
-						  'name_button'=>addslashes(Tools::getValue('ButtonNameEdit_'.$language['id_lang'])), 
+						  'id_button'=>Tools::getValue('ButttonIdToUpdate'),
+						  'id_lang'=>$language['id_lang'],
+						  'name_button'=>addslashes(Tools::getValue('ButtonNameEdit_'.$language['id_lang'])),
 						  'detailSub'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSub']) ? $infoSub[$language['id_lang']]['detailSub'] : ''))),
 						  'detailSubLeft'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSubLeft']) ? $infoSub[$language['id_lang']]['detailSubLeft'] : ''))),
 						  'detailSubTR'=>htmlentities(addslashes((isset($infoSub[$language['id_lang']]['detailSubTR']) ? $infoSub[$language['id_lang']]['detailSubTR'] : '')))
@@ -215,32 +215,32 @@ class navmegadrownEvo extends Module
 					);
 					if(!$result) $errorsNb++;
 				 }
-			}		
+			}
 			if(!$result) $errorsNb++;
-			
+
 			if($errorsNb!=0)
 				$output .= $this->displayError($this->l('Unable to update this button'));
 			else
 				$output .= $this->displayConfirmation($this->l('Button updated'));
 			$ButtonIdInEdit = Tools::getValue('ButttonIdToUpdate');
 		}
-		if(Tools::isSubmit('SubmitButtonOrganization')) 
+		if(Tools::isSubmit('SubmitButtonOrganization'))
 		{
 			if(trim(Tools::getValue('Organisation')) != '') {
 				$ButtonOrganisation = explode(',', Tools::getValue('Organisation'));
 					$position = 1;
 				foreach($ButtonOrganisation as $KPos=>$VPos) {
 					$result = Db::getInstance()->autoExecute(
-						_DB_PREFIX_.'admevo_button', 
+						_DB_PREFIX_.'admevo_button',
 						array(
 							"order_button"=>$position
-						), 
-						"UPDATE", 
+						),
+						"UPDATE",
 						"id_button =".str_replace("button_", "", $VPos)
-						);				
+						);
 					$position++;
 					if(!$result) $errorsNb++;
-				}	
+				}
 			}
 
 			if($errorsNb!=0)
@@ -248,7 +248,7 @@ class navmegadrownEvo extends Module
 			else
 				$output .= $this->displayConfirmation($this->l('Organziation saved'));
 		}
-		if(Tools::isSubmit('SubmitButtonDesign')) 
+		if(Tools::isSubmit('SubmitButtonDesign'))
 		{
 			$errorsNb = 0;
 			//Db::getInstance()->delete(_DB_PREFIX_.'admevo_parameters');
@@ -271,10 +271,10 @@ class navmegadrownEvo extends Module
 			Tools::getValue('SubMenuColorHover')=="" 	? false : $tabDesign["ColorFontSubMenuHover"] 		= Tools::getValue('SubMenuColorHover');
 			Tools::getValue('SubSubMenuColorHover')=="" ? false : $tabDesign["ColorFontSubSubMenuHover"] 	= Tools::getValue('SubSubMenuColorHover');
 			Tools::getValue('VerticalPadding')=="" 		? false : $tabDesign["VerticalPadding"] 	= Tools::getValue('VerticalPadding');
-			Tools::getValue('noColorTR1')=="on" 		? $tabDesign["backgroundTR1"] 	= "" 		: $tabDesign["backgroundTR1"] 	= Tools::getValue('backgroundTR1');	
-			Tools::getValue('noColorTD1')=="on" 		? $tabDesign["backgroundTD1"] 	= "" 		: $tabDesign["backgroundTD1"] 	= Tools::getValue('backgroundTD1');	
-			Tools::getValue('noColorTD2')=="on" 		? $tabDesign["backgroundTD2"] 	= "" 		: $tabDesign["backgroundTD2"] 	= Tools::getValue('backgroundTD2');	
-			Tools::getValue('noColorTD3')=="on" 		? $tabDesign["backgroundTD3"] 	= "" 		: $tabDesign["backgroundTD3"] 	= Tools::getValue('backgroundTD3');	
+			Tools::getValue('noColorTR1')=="on" 		? $tabDesign["backgroundTR1"] 	= "" 		: $tabDesign["backgroundTR1"] 	= Tools::getValue('backgroundTR1');
+			Tools::getValue('noColorTD1')=="on" 		? $tabDesign["backgroundTD1"] 	= "" 		: $tabDesign["backgroundTD1"] 	= Tools::getValue('backgroundTD1');
+			Tools::getValue('noColorTD2')=="on" 		? $tabDesign["backgroundTD2"] 	= "" 		: $tabDesign["backgroundTD2"] 	= Tools::getValue('backgroundTD2');
+			Tools::getValue('noColorTD3')=="on" 		? $tabDesign["backgroundTD3"] 	= "" 		: $tabDesign["backgroundTD3"] 	= Tools::getValue('backgroundTD3');
 			Tools::getValue('heightTR1')=="" 			? false : $tabDesign["heightTR1"] 	= Tools::getValue('heightTR1');
 			Tools::getValue('widthTD1')=="" 			? false : $tabDesign["widthTD1"] 	= Tools::getValue('widthTD1');
 			Tools::getValue('widthTD3')=="" 			? false : $tabDesign["widthTD3"] 	= Tools::getValue('widthTD3');
@@ -283,10 +283,10 @@ class navmegadrownEvo extends Module
 			Tools::getValue('stateTD3')=="" 			? $tabDesign["stateTD3"]="off" : $tabDesign["stateTD3"] 	= Tools::getValue('stateTD3');
 
 			$result = Db::getInstance()->autoExecuteWithNullValues(
-						_DB_PREFIX_.'admevo_parameters', 
-						$tabDesign, 
+						_DB_PREFIX_.'admevo_parameters',
+						$tabDesign,
 						"UPDATE"
-						); 	
+						);
 			$AutorizeExtensions = array(0=>".jpg", 1=>".gif", 2=>".png");
 			if(isset($_FILES['PictureMenu']) && $_FILES['PictureMenu']['tmp_name']!="") {
 				$extension = strtolower(substr($_FILES['PictureMenu']['name'], -4));
@@ -296,10 +296,10 @@ class navmegadrownEvo extends Module
 						$errorsNb++;
 					else
 						Db::getInstance()->autoExecuteWithNullValues(
-						_DB_PREFIX_.'admevo_parameters', 
+						_DB_PREFIX_.'admevo_parameters',
 						array(
 							"extensionMenu"=> $extension
-						), 
+						),
 						"UPDATE"
 						);
 				}
@@ -314,10 +314,10 @@ class navmegadrownEvo extends Module
 						$errorsNb++;
 					else
 						Db::getInstance()->autoExecuteWithNullValues(
-						_DB_PREFIX_.'admevo_parameters', 
+						_DB_PREFIX_.'admevo_parameters',
 						array(
 							"extensionBout"=> $extension
-						), 
+						),
 						"UPDATE"
 						);
 				}
@@ -332,10 +332,10 @@ class navmegadrownEvo extends Module
 						$errorsNb++;
 					else
 						Db::getInstance()->autoExecuteWithNullValues(
-						_DB_PREFIX_.'admevo_parameters', 
+						_DB_PREFIX_.'admevo_parameters',
 						array(
 							"extensionArro"=> $extension
-						), 
+						),
 						"UPDATE"
 						);
 				}
@@ -350,10 +350,10 @@ class navmegadrownEvo extends Module
 						$errorsNb++;
 					else
 						Db::getInstance()->autoExecuteWithNullValues(
-						_DB_PREFIX_.'admevo_parameters', 
+						_DB_PREFIX_.'admevo_parameters',
 						array(
 							"extensionBack"=> $extension
-						), 
+						),
 						"UPDATE"
 						);
 				}
@@ -365,9 +365,9 @@ class navmegadrownEvo extends Module
 			else
 				$output .= $this->displayConfirmation($this->l('File uploaded and parameters saved'));
 		}
-		if(isset($_POST['Action']) && $_POST['Action']!="") 
+		if(isset($_POST['Action']) && $_POST['Action']!="")
 		{
-			switch($_POST['Action']) 
+			switch($_POST['Action'])
 			{
 				case "EditButton":
 					$ButtonIdInEdit = $_POST['ButtonIdAction'];
@@ -382,7 +382,7 @@ class navmegadrownEvo extends Module
 					break;
 			}
 		}
-		if(isset($_POST['ActionFile']) && $_POST['ActionFile']!="") 
+		if(isset($_POST['ActionFile']) && $_POST['ActionFile']!="")
 		{
 			switch($_POST['ActionFile']) {
 				case "DeleteFile":
@@ -395,9 +395,9 @@ class navmegadrownEvo extends Module
 				break;
 			}
 		}
-		if(isset($_POST['ActionPicture']) && $_POST['ActionPicture']!="") 
+		if(isset($_POST['ActionPicture']) && $_POST['ActionPicture']!="")
 		{
-			switch($_POST['ActionPicture']) 
+			switch($_POST['ActionPicture'])
 			{
 				case "UploadPicture":
 					$AutorizeExtensions = array(0=>".gif", 1=>".jpg", 2=>".png");
@@ -408,12 +408,12 @@ class navmegadrownEvo extends Module
 							$img = dirname(__FILE__).'/views/img/menu/imgBout'.$idButton.$extension;
 							if ( move_uploaded_file( $_FILES['PictureFile']['tmp_name'], $img ) ) {
 								$result = Db::getInstance()->autoExecute(
-								_DB_PREFIX_.'admevo_button', 
+								_DB_PREFIX_.'admevo_button',
 								array(
-									"img_name"=>'imgBout'.$idButton.$extension, 
-									"img_link"=>urlencode($_POST['imgLink']) 
-								), 
-								"UPDATE", "id_button=".$idButton); 
+									"img_name"=>'imgBout'.$idButton.$extension,
+									"img_link"=>urlencode($_POST['imgLink'])
+								),
+								"UPDATE", "id_button=".$idButton);
 								$output .= $this->displayConfirmation($this->l('Picture has been uploaded'));
 							}
 							else
@@ -422,22 +422,22 @@ class navmegadrownEvo extends Module
 					}
 					if(isset($_POST['imgLink'])) {
 						$result = Db::getInstance()->autoExecute(
-						_DB_PREFIX_.'admevo_button', 
+						_DB_PREFIX_.'admevo_button',
 						array(
-							"img_link"=>urlencode($_POST['imgLink']) 
-						), 
-						"UPDATE", "id_button=".$idButton); 
+							"img_link"=>urlencode($_POST['imgLink'])
+						),
+						"UPDATE", "id_button=".$idButton);
 					}
 					$ButtonIdInEdit = $idButton;
 				break;
 				case "DeletePicture":
 					$idButton = $_POST['idButton'];
 					$result = Db::getInstance()->autoExecute(
-						_DB_PREFIX_.'admevo_button', 
+						_DB_PREFIX_.'admevo_button',
 						array(
-							"img_name"=>''								
-						), 
-						"UPDATE", "id_button=".$idButton); 
+							"img_name"=>''
+						),
+						"UPDATE", "id_button=".$idButton);
 					if(is_file(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePicture']))
 						if(unlink(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePicture']))
 							$output .= $this->displayConfirmation($this->l('File deleted'));
@@ -446,7 +446,7 @@ class navmegadrownEvo extends Module
 					$ButtonIdInEdit = $idButton;
 				break;
 			}
-			foreach ($languages as $language) 
+			foreach ($languages as $language)
 			{
 				$result = Db::getInstance()->autoExecute(
 					_DB_PREFIX_.'admevo_button_lang',
@@ -454,11 +454,11 @@ class navmegadrownEvo extends Module
 					  'detailSubLeft'=>htmlentities(addslashes(Tools::getValue('detailSubLeft_'.$language['id_lang'])))
 					),
 					'UPDATE',
-					'id_button='.$_POST['idButton'].' AND 
+					'id_button='.$_POST['idButton'].' AND
 					id_lang='.$language['id_lang']
 				);
 				if(!$result) $errorsNb++;
-			}			
+			}
 			$ButtonIdInEdit = $_POST['idButton'];
 		}
 		//Background SubMenu
@@ -473,11 +473,11 @@ class navmegadrownEvo extends Module
 							$img = dirname(__FILE__).'/views/img/menu/imgBackground'.$idButton.$extension;
 							if ( move_uploaded_file( $_FILES['PictureFileBackground']['tmp_name'], $img ) ) {
 								$result = Db::getInstance()->autoExecute(
-								_DB_PREFIX_.'admevo_button', 
+								_DB_PREFIX_.'admevo_button',
 								array(
 									"img_name_background"=>'imgBackground'.$idButton.$extension
-								), 
-								"UPDATE", "id_button=".$idButton); 
+								),
+								"UPDATE", "id_button=".$idButton);
 								$output .= $this->displayConfirmation($this->l('Picture has been uploaded'));
 							}
 							else
@@ -489,11 +489,11 @@ class navmegadrownEvo extends Module
 				case "DeletePicture":
 					$idButton = $_POST['idButton'];
 					$result = Db::getInstance()->autoExecute(
-						_DB_PREFIX_.'admevo_button', 
+						_DB_PREFIX_.'admevo_button',
 						array(
-							"img_name_background"=>''								
-						), 
-						"UPDATE", "id_button=".$idButton); 
+							"img_name_background"=>''
+						),
+						"UPDATE", "id_button=".$idButton);
 					if(is_file(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePictureBackground']))
 						if(unlink(dirname(__FILE__).'/views/img/menu/'.$_POST['NamePictureBackground']))
 							$output .= $this->displayConfirmation($this->l('File deleted'));
@@ -512,11 +512,11 @@ class navmegadrownEvo extends Module
 					  'detailSub'=>htmlentities(addslashes(Tools::getValue('detailSub_'.$language['id_lang'])))
 					),
 					'UPDATE',
-					'id_button='.Tools::getValue('idButton').' AND 
+					'id_button='.Tools::getValue('idButton').' AND
 					id_lang='.$language['id_lang']
 				);
 				if(!$result) $errorsNb++;
-			}			
+			}
 			$ButtonIdInEdit = $_POST['idButton'];
 		}
 		if(Tools::isSubmit('SubmitDetailSubTr')) {
@@ -527,68 +527,68 @@ class navmegadrownEvo extends Module
 					  'detailSubTR'=>htmlentities(addslashes(Tools::getValue('detailSubTr_'.$language['id_lang'])))
 					),
 					'UPDATE',
-					'id_button='.Tools::getValue('idButton').' AND 
+					'id_button='.Tools::getValue('idButton').' AND
 					id_lang='.$language['id_lang']
 				);
 				if(!$result) $errorsNb++;
-			}			
+			}
 			$ButtonIdInEdit = Tools::getValue('idButton');
 		}
 		return $output.$this->displayForm();
 	}
-	
+
 	static public function getButtonDetail($IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
-		ON (tb.id_button=tbl.id_button) 
+		FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl
+		ON (tb.id_button=tbl.id_button)
 		WHERE tb.id_button='.$IdButton.' ORDER BY order_button ASC, name_button ASC
 		' );
-	}	
+	}
 	static public function getButtonLinksCat($IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_button_link_cat 
-		WHERE id_button='.$IdButton.' ORDER BY num_ligne ASC, num_column ASC, id_link_cat ASC 
+		FROM '._DB_PREFIX_.'admevo_button_link_cat
+		WHERE id_button='.$IdButton.' ORDER BY num_ligne ASC, num_column ASC, id_link_cat ASC
 		' );
-	}	
+	}
 	static public function getButtonLinksCustom($IdButton, $idLang) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_custom_menu tb 
-		INNER JOIN '._DB_PREFIX_.'admevo_custom_menu_lang tbl 
-		ON (tb.id_button=tbl.id_button AND tb.id_custom=tbl.id_custom) 
-		WHERE tb.id_button='.$IdButton.' AND tb.id_parent = 0 AND tbl.id_lang='.$idLang.' 
-		ORDER BY tb.num_ligne ASC, tb.num_column ASC 
+		FROM '._DB_PREFIX_.'admevo_custom_menu tb
+		INNER JOIN '._DB_PREFIX_.'admevo_custom_menu_lang tbl
+		ON (tb.id_button=tbl.id_button AND tb.id_custom=tbl.id_custom)
+		WHERE tb.id_button='.$IdButton.' AND tb.id_parent = 0 AND tbl.id_lang='.$idLang.'
+		ORDER BY tb.num_ligne ASC, tb.num_column ASC
 		' );
-	}	
+	}
 	static public function getButtonLinks($IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
 		FROM '._DB_PREFIX_.'admevo_button_link WHERE id_button='.$IdButton.'
 		' );
-	}	
+	}
 	static public function getButtonOrganization($IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
 		FROM '._DB_PREFIX_.'admevo_button_organization WHERE id_button='.$IdButton.'
 		' );
-	}	
+	}
 	static public function getNameCategory($IdCat, $IdLang, $IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'category_lang tb INNER JOIN '._DB_PREFIX_.'admevo_button_organization tbl 
-		ON (tb.id_category=tbl.id_link_cat) WHERE tb.id_category='.$IdCat.' AND tb.id_lang='.$IdLang.' and 
-		tbl.id_button='.$IdButton.' 
+		FROM '._DB_PREFIX_.'category_lang tb INNER JOIN '._DB_PREFIX_.'admevo_button_organization tbl
+		ON (tb.id_category=tbl.id_link_cat) WHERE tb.id_category='.$IdCat.' AND tb.id_lang='.$IdLang.' and
+		tbl.id_button='.$IdButton.'
 		' );
-	}	
+	}
 	static public function getNameSubstitute($IdCat, $IdLang, $IdButton) {
 		$return[0]['name_substitute'] = "";
 		$result = Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_button_langcat WHERE id_cat='.$IdCat.' AND id_lang='.$IdLang.' and 
-		id_button='.$IdButton.' 
-		' );	
+		FROM '._DB_PREFIX_.'admevo_button_langcat WHERE id_cat='.$IdCat.' AND id_lang='.$IdLang.' and
+		id_button='.$IdButton.'
+		' );
 		if($result)
 			return $result;
 		return $return;
@@ -596,51 +596,51 @@ class navmegadrownEvo extends Module
 	static public function getAllNameSubstitute($IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_button_langcat WHERE  
-		id_button='.$IdButton.' 
-		' );	
+		FROM '._DB_PREFIX_.'admevo_button_langcat WHERE
+		id_button='.$IdButton.'
+		' );
 	}
 	static public function getNameCategoryUnder($IdCat, $IdButton) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'category tb INNER JOIN '._DB_PREFIX_.'admevo_button_organization tbl 
+		FROM '._DB_PREFIX_.'category tb INNER JOIN '._DB_PREFIX_.'admevo_button_organization tbl
 		ON (tb.id_category=tbl.id_link_cat)
-		WHERE tb.id_parent='.$IdCat.' and tbl.state=1 and tb.active=1 and 
-		tbl.id_button='.$IdButton.' ORDER BY tbl.num_ligne ASC 
+		WHERE tb.id_parent='.$IdCat.' and tbl.state=1 and tb.active=1 and
+		tbl.id_button='.$IdButton.' ORDER BY tbl.num_ligne ASC
 		' );
-	}	
-	static public function getProductsUnder($id_category, $id_lang, $id_shop = 1) {	
+	}
+	static public function getProductsUnder($id_category, $id_lang, $id_shop = 1) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM ('._DB_PREFIX_.'category_product cp INNER JOIN '._DB_PREFIX_.'product_lang pl 
-		ON (cp.id_product=pl.id_product)) INNER JOIN '._DB_PREFIX_.'product p on (cp.id_product=p.id_product) 
-		WHERE cp.id_category='.(int)$id_category.' 
-		AND p.active=1 
+		FROM ('._DB_PREFIX_.'category_product cp INNER JOIN '._DB_PREFIX_.'product_lang pl
+		ON (cp.id_product=pl.id_product)) INNER JOIN '._DB_PREFIX_.'product p on (cp.id_product=p.id_product)
+		WHERE cp.id_category='.(int)$id_category.'
+		AND p.active=1
 		AND pl.id_lang = '.(int)$id_lang.'
 		AND pl.id_shop = '.(int)$id_shop.'
-		ORDER BY pl.name ASC 
+		ORDER BY pl.name ASC
 		' );
-	}	
+	}
 	static public function getButtonLinksCustomUnder($IdButton, $IdParent, $idLang) {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
-		FROM '._DB_PREFIX_.'admevo_custom_menu tb 
-		INNER JOIN '._DB_PREFIX_.'admevo_custom_menu_lang tbl 
-		ON (tb.id_button=tbl.id_button AND tb.id_custom=tbl.id_custom) 
-		WHERE tb.id_button='.$IdButton.' AND tb.id_parent = '.$IdParent.' AND tbl.id_lang = '.$idLang.' 
+		FROM '._DB_PREFIX_.'admevo_custom_menu tb
+		INNER JOIN '._DB_PREFIX_.'admevo_custom_menu_lang tbl
+		ON (tb.id_button=tbl.id_button AND tb.id_custom=tbl.id_custom)
+		WHERE tb.id_button='.$IdButton.' AND tb.id_parent = '.$IdParent.' AND tbl.id_lang = '.$idLang.'
 		ORDER BY tb.num_ligne ASC');
-	}	
+	}
 	static public function getParameters() {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
 		FROM '._DB_PREFIX_.'admevo_parameters LIMIT 1
 		' );
-	}	
+	}
 	static public function getMaxColumns($IdButton) {
 		$maxCols = 0;
 		$result = Db::getInstance()->ExecuteS('
-		SELECT num_ligne, count(id_link_cat) as nbCat  
-		FROM '._DB_PREFIX_.'admevo_button_link_cat WHERE id_button='.$IdButton.' GROUP BY num_ligne  
+		SELECT num_ligne, count(id_link_cat) as nbCat
+		FROM '._DB_PREFIX_.'admevo_button_link_cat WHERE id_button='.$IdButton.' GROUP BY num_ligne
 		' );
 		if(sizeof($result)) {
 			foreach($result as $kr=>$ValResult)
@@ -651,27 +651,27 @@ class navmegadrownEvo extends Module
 	}
 	static public function getNbColumns($IdButton, $Line) {
 		return Db::getInstance()->ExecuteS('
-		SELECT count(id_link_cat) as nbCols 
+		SELECT count(id_link_cat) as nbCols
 		FROM '._DB_PREFIX_.'admevo_button_link_cat WHERE id_button='.$IdButton.' AND num_ligne='.$Line);
 	}
 	public function getCategoryLinkMD($id_category, $alias = NULL)
 	{
 		if (is_object($id_category))
-			return ($this->allow == 1) ? (_PS_BASE_URL_.__PS_BASE_URI__.intval($id_category->id).'-'.$id_category->link_rewrite) : 
+			return ($this->allow == 1) ? (_PS_BASE_URL_.__PS_BASE_URI__.intval($id_category->id).'-'.$id_category->link_rewrite) :
 			(_PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category->id));
 		if ($alias)
 			return ($this->allow == 1) ? (_PS_BASE_URL_.__PS_BASE_URI__.intval($id_category).'-'.$alias) :
 			(_PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category));
 		return _PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category);
 	}
-	
+
 	function recurseCategory($indexedCategories, $categories, $current, $id_category = 1, $id_category_default = NULL, $CategorySelected, $CategoryLine, $CategoryColumn, $CategoryName, $CategoryState, $ViewProducts)
 	{
 		global $done;
 		$defaultLanguage = intval(Configuration::get('PS_LANG_DEFAULT'));
 		$languages = Language::getLanguages();
 		$iso = Language::getIsoById($defaultLanguage);
-		
+
 		static $irow;
 		if(!is_array($CategorySelected))
 			$CategorySelected = array();
@@ -700,7 +700,7 @@ $this->_html .= '</td>';
 $this->_html .= '<td>';
 				$this->_html .= '<table cellpadding="0" cellspacing="0" width="100%">
 				<tr><td>'.$this->l('Position').'&nbsp;:&nbsp;</td><td>'.$this->l('Category').'&nbsp;<select name="columnBox_'.$id_category.'" style="font-size : 10px">';
-				for($c=1; $c<=10; $c++) 
+				for($c=1; $c<=10; $c++)
 	$this->_html .= '<option value="'.$c.'" '.(isset($CategoryColumn[$id_category]) && $CategoryColumn[$id_category] == $c ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Column').' '.$c.'&nbsp;&nbsp;</option>';
 	$this->_html .= '</select>&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;<select name="lineBox_'.$id_category.'" style="font-size : 10px">';
 	for($i=1;$i<=10;$i++)
@@ -710,7 +710,7 @@ $this->_html .= '<td>';
 					<option value="1" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 1 || $CategoryState[$id_category] == "" ? " selected" : false).'>'.$this->l('enabled').'</option>
 				</select></td></tr>
 				<tr><td>'.$this->l('Name').'&nbsp;:&nbsp;</td><td>';
-				
+
 			foreach ($languages as $language) {
 						$this->_html .= '<div id="DivLang'.$id_category.'_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $defaultLanguage ? 'block' : 'none').'; float: left" class="divLang">';
 						$this->_html .= '<input type="text" id="textSubstitute_'.$id_category.'_'.$language['id_lang'].'" name="textSubstitute_'.$id_category.'_'.$language['id_lang'].'" value="'.(isset($CategoryName[$id_category][$language['id_lang']]) ? $CategoryName[$id_category][$language['id_lang']] : '').'" size = "45" style="font-size : 10px"></div>';
@@ -726,7 +726,7 @@ $this->_html .= '<td>';
 			foreach ($categories[$id_category] AS $key => $row)
 				if ($key != 'infos')
 					$this->recurseCategory($indexedCategories, $categories, $categories[$id_category][$key], $key, NULL, $CategorySelected, $CategoryLine, $CategoryColumn, $CategoryName, $CategoryState, $ViewProducts);
-	}	
+	}
 	public function displayFlagsMD($languages, $defaultLanguage, $ids, $id, $return = false)
 	{
 			if (sizeof($languages) == 1)
@@ -745,19 +745,19 @@ $this->_html .= '<td>';
 				return $output;
 			echo $output;
 	}
-	public function displayForm() 
+	public function displayForm()
 	{
 		global $ButtonIdInEdit;
 		$defaultLanguage = intval(Configuration::get('PS_LANG_DEFAULT'));
 		$languages = Language::getLanguages();
 		$iso = Language::getIsoById($defaultLanguage);
-		($ButtonIdInEdit!='' && $ButtonIdInEdit!=0) ? $languageIds = 'ButtonsEdit'.utf8_encode('¤').'Buttons' :$languageIds = 'Buttons';
+		($ButtonIdInEdit!='' && $ButtonIdInEdit!=0) ? $languageIds = 'ButtonsEdit'.utf8_encode('ï¿½').'Buttons' :$languageIds = 'Buttons';
 		$tabButtonsOrganizate = array();
 		$MDConfiguration = array();
 		$MDConfiguration = Db::getInstance()->ExecuteS('
-				SELECT *  
-				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
-				ON (tb.id_button=tbl.id_button) 
+				SELECT *
+				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl
+				ON (tb.id_button=tbl.id_button)
 				WHERE tbl.id_lang='.$this->context->cookie->id_lang.' ORDER BY order_button ASC, name_button ASC');
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
@@ -772,7 +772,7 @@ $this->_html .= '<td>';
 			<script type="text/javascript">id_language = Number('.$defaultLanguage.');</script>
 			<script type="text/javascript" src="'.$this->_path.'views/js/jquery-sortable.js"></script>
 			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-			
+
 			<script type="text/javascript">
 					tinyMCE.init({
 						mode : "textareas",
@@ -800,7 +800,7 @@ $this->_html .= '<td>';
 						elements : "nourlconvert",
 						convert_urls : false,
 						language : "'.(file_exists(_PS_ROOT_DIR_.'/js/tinymce/jscripts/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en').'"
-						
+
 					});
 			//tinyMCEInit(\'textarea.rte\');
 			function	showLanguagesMD(id)
@@ -824,7 +824,7 @@ $this->_html .= '<td>';
 					if(confirm("'.$this->l('Do you want to delete this file ?').'")) {
 						$("#ActionFile").val("DeleteFile");
 						$("#FileToDelete").val(pictureToDelete);
-						$("#formdesign").submit();					
+						$("#formdesign").submit();
 					}
 				}
 				var wait = "<div widht=\'100%\' align=\'center\' style=\'height : 190px\'><br /><br /><br /><br /><img src=\''.$this->_path.'views/img/ajaxLoading.gif\'><br />'.$this->l('Loading').'</div>";
@@ -834,13 +834,13 @@ $this->_html .= '<td>';
 					  url: "'.$this->_path.'ajax_update_button.php",
 					  data: {
 						  action: "DetailMenu",
-						  idButton: $("#ButttonIdToUpdate").val(), 
+						  idButton: $("#ButttonIdToUpdate").val(),
 						  idLang: '.$this->context->cookie->id_lang.'
 					  },
 					  success: function(data) {
 							$("#customMenu").html(data)
 					  }
-					});	
+					});
 				}
 				function addCustomMenu(IdButton) {
 					if($("#CustomMenuName").val() != "") {
@@ -871,14 +871,14 @@ $this->_html .= '<td>';
 					  url: "'.$this->_path.'ajax_update_button.php",
 					  data: {
 						  action: "CustomMenuDelete",
-						  idButton: ButtonId, 
-						  idCustomMenu: CustomMenuId, 
+						  idButton: ButtonId,
+						  idCustomMenu: CustomMenuId,
 						  idLang: '.$this->context->cookie->id_lang.'
 					  },
 					  success: function() {
 						displayDetailMenu()
 					  }
-					});	
+					});
 				}
 				function saveCustomMenu(ButtonId, CustomMenuId) {
 					';
@@ -897,21 +897,21 @@ $this->_html .= '<td>';
 					  url: "'.$this->_path.'ajax_update_button.php",
 					  data: {
 						  action: "CustomMenuSave",
-						  idButton: ButtonId, 
+						  idButton: ButtonId,
 						  idCustomMenu: CustomMenuId,
 						  ';
 						  foreach ($languages as $language)
-						 	 $this->_html .= 'nameMenu_'.$language['id_lang'].': NewNameMenu_'.$language['id_lang'].', 
+						 	 $this->_html .= 'nameMenu_'.$language['id_lang'].': NewNameMenu_'.$language['id_lang'].',
 						  ';
-		 $this->_html .= 'linkMenu: NewMenuLink, 
-						  lineMenu: Newline, 
-						  columnMenu: Newcolumn, 
+		 $this->_html .= 'linkMenu: NewMenuLink,
+						  lineMenu: Newline,
+						  columnMenu: Newcolumn,
 						  idLang: '.$this->context->cookie->id_lang.'
 					  },
 					  success: function(data) {
 						displayDetailMenu()
 					  }
-					});	
+					});
 				}
 				function addCustomSubMenu(ButtonId, CustomMenuId) {
 					if($("#CustomSubMenuName" + CustomMenuId).val() != "") {
@@ -925,11 +925,11 @@ $this->_html .= '<td>';
 						  url: "'.$this->_path.'ajax_update_button.php",
 						  data: {
 							  action: "CustomSubMenuAdd",
-							  idButton: ButtonId, 
+							  idButton: ButtonId,
 							  idCustomMenu: CustomMenuId,
 							  ';
 							  foreach ($languages as $language)
-							  $this->_html .= 'SubMenuName_'.$language['id_lang'].' : NewSubMenu_'.$language['id_lang'].', 
+							  $this->_html .= 'SubMenuName_'.$language['id_lang'].' : NewSubMenu_'.$language['id_lang'].',
 						 	  ';
 			 $this->_html .= 'idLang: '.$this->context->cookie->id_lang.'
 						  },
@@ -971,12 +971,12 @@ $this->_html .= '<td>';
 						{
 							position: relative;
 							display: block;
-							float: left;	
+							float: left;
 							list-style-type: none;
 							text-align: center;
 						}
 						.display_flags {
-							padding-top : 3px;	
+							padding-top : 3px;
 						}
 						';
 			for($k=2;$k<=13; $k++) {
@@ -1044,13 +1044,13 @@ $this->_html .= '<td>';
 				#customWidget'.$k.' {
 					position: relative;
 					height: 36px;
-				}				
+				}
 				';
 			}
 			$this->_html.= '</style>';
 
 		if (!is_writable(dirname(__FILE__).'/views/img/'))
-			$this->_html .= $this->displayError($this->l('Folder "img" is not writable'));		
+			$this->_html .= $this->displayError($this->l('Folder "img" is not writable'));
 		$this->_html .= '<H2>'.$this->displayName.'</H2>';
 		$this->_html .= '
 		<fieldset>
@@ -1126,7 +1126,7 @@ $this->_html .= '<td>';
 													</div>
 												</div>
 												<div id="colorpickerHolder4" id="colorpickerHolder4" ></div>
-											</div>							
+											</div>
 										</td>
 										<td>
 											<input type="hidden" name="SubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubMenuHover'].'" id="HiddenColor7" />
@@ -1155,7 +1155,7 @@ $this->_html .= '<td>';
 													</div>
 												</div>
 												<div id="colorpickerHolder5" name="colorpickerHolder5" ></div>
-											</div>							
+											</div>
 										</td>
 										<td>
 											<input type="hidden" name="SubSubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubSubMenuHover'].'" id="HiddenColor8" />
@@ -1525,7 +1525,7 @@ $this->_html .= '<td>';
 							 </form>
 							 <br />
 							';
-			
+
 			$this->_html .='<form action="'.$_SERVER['REQUEST_URI'].'" method="post" name="formbuttonparameters" id="formbuttonparameters">';
 			$this->_html .= '<table cellpadding="0" cellspacing="1" width="100%">';
 			$this->_html .= '<tr><td>'.$this->l('Button Name').' : </td><td>';
@@ -1569,7 +1569,7 @@ $this->_html .= '<td>';
 			$indexedCategories = array();
 			$categories = Category::getCategories(intval($this->context->cookie->id_lang), false);
 			foreach ($indexedCategories AS $k => $row)
-				$index[] = $row['id_category'];									
+				$index[] = $row['id_category'];
 			$this->recurseCategory($index, $categories, $categories[0][1], 1, NULL, $tabCategorySelected, $tabCategoryLine, $tabCategoryColumn, $tabCategoryTextSubstitute, $tabCategoryTextState, $tabCategoryViewProducts);
 			$this->_html .='
 					</table>
@@ -1597,19 +1597,19 @@ $this->_html .= '<td>';
 			$this->_html .= '$(document).ready(function() { displayDetailMenu(); });';
 			$this->_html .= '</script>';
 		}
-		
+
 		return	$this->_html;
 	}
-	private function makeMegaDrown($IdLang) 
+	private function makeMegaDrown($IdLang)
 	{
 		if(Tools::getIsset('id_category'))
 			$ActiveCategory = (int)Tools::getValue('id_category');
 		else
 			$ActiveCategory = null;
-			
+
 		if(Tools::getIsset('id_product'))
-		{			
-			if (!isset($this->context->cookie->last_visited_category) 
+		{
+			if (!isset($this->context->cookie->last_visited_category)
 					OR !Product::idIsOnCategoryId(intval($_GET['id_product']), array('0' => array('id_category' => $this->context->cookie->last_visited_category))))
 			{
 				$product = new Product(intval($_GET['id_product']));
@@ -1618,21 +1618,21 @@ $this->_html .= '<td>';
 			}
 			else
 				$ActiveCategory = (int)$this->context->cookie->last_visited_category;
-		}	
-		
+		}
+
 		if($ActiveCategory !== null) {
 			$resultCat = Db::getInstance()->ExecuteS('
-				SELECT *  
-				FROM '._DB_PREFIX_.'admevo_button_link_cat 
+				SELECT *
+				FROM '._DB_PREFIX_.'admevo_button_link_cat
 				WHERE id_link_cat='.$ActiveCategory);
 		}
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
 		$MDConfiguration = array();
 		$MDConfiguration = Db::getInstance()->ExecuteS('
-				SELECT *  
-				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
-				ON (tb.id_button=tbl.id_button) 
+				SELECT *
+				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl
+				ON (tb.id_button=tbl.id_button)
 				WHERE tbl.id_lang='.$IdLang.' ORDER BY order_button ASC, name_button ASC');
 		if(sizeof($MDConfiguration)) {
 			foreach($MDConfiguration as $kButton=>$ValButton) {
@@ -1651,8 +1651,8 @@ $this->_html .= '<td>';
 					foreach($CatMenu as $kMenu=>$ValCat) {
 						$tabIdLinkCat[$ValButton['id_button']][$ValCat['id_link_cat']] = $ValCat['id_link_cat'];
 						$DescendantCateogries = Db::getInstance()->ExecuteS('
-							SELECT *  
-							FROM '._DB_PREFIX_.'category  
+							SELECT *
+							FROM '._DB_PREFIX_.'category
 							WHERE id_parent='.$ValCat['id_link_cat']);
 							if(sizeof($DescendantCateogries))
 								foreach($DescendantCateogries as $kDescCat=>$ValDescCat)
@@ -1771,13 +1771,13 @@ $this->_html .= '<td>';
 																					<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a>
 																				</li>'.$this->eol;
 
-											if($ValMenu['view_products'] != 'on') 
+											if($ValMenu['view_products'] != 'on')
 											{
 												$NameCategoryUnder = array();
 												$NameCategoryUnder = $this->getNameCategoryUnder($ValMenu['id_link_cat'], $ValButton['id_button']);
-												if(sizeof($NameCategoryUnder)) 
+												if(sizeof($NameCategoryUnder))
 												{
-													foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) 
+													foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat)
 													{
 														$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
 														$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
@@ -1790,13 +1790,13 @@ $this->_html .= '<td>';
 													}
 												}
 											}
-											else 
+											else
 											{
 												$NameProductsUnder = array();
 												$NameProductsUnder = $this->getProductsUnder($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $this->context->shop->id);
-												if(sizeof($NameProductsUnder)) 
+												if(sizeof($NameProductsUnder))
 												{
-													foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd) 
+													foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd)
 													{
 														$Products = new Product(intval($ValUnderProd['id_product']), true, intval($this->context->cookie->id_lang));
 														$rewrited_url = $Products->getLink();
@@ -1807,7 +1807,7 @@ $this->_html .= '<td>';
 											}
 											$this->_menu .= '</ul>'.$this->eol;
 										break;
-										
+
 										case 'custom':
 											$this->_menu .= '<ul>'.$this->eol;
 											$this->_menu .= '<li class="stitle"><a href="'.$ValMenu['link'].'" '.($ValMenu['link']=="#" || $ValMenu['link']=="" ? "onclick='return false'" : false).' style="text-align:left">'.$ValMenu['name_menu'].'</a></li>'.$this->eol;
@@ -1843,46 +1843,46 @@ $this->_html .= '<td>';
 			$this->_menu .= '</ul>'.$this->eol;
 			$this->_menu .= '</div>'.$this->eol;
 		}
-	}	
-	
+	}
+
 	private function checkIfImageExist($file_name = '', $ext = 'png')
 	{
 		$image = array();
 		$image['exist'] = 0;
 		$image['path'] = '';
-		
-		if(is_file(dirname(__FILE__).'/views/img/menu/'.$file_name.'-'.$this->context->shop->id.$ext)) 	
-		{				
+
+		if(is_file(dirname(__FILE__).'/views/img/menu/'.$file_name.'-'.$this->context->shop->id.$ext))
+		{
 			$image['exist'] = 1;
 			$image['path'] = $this->_path.'views/img/menu/'.$file_name.'-'.$this->context->shop->id.$ext;
 		}
-		
-		return $image;	
+
+		return $image;
 	}
-	
-	public function hookDisplayTop($param) 
-	{	
+
+	public function hookDisplayTop($param)
+	{
 		$this->makeMegaDrown($this->context->cookie->id_lang);
-		
+
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-				
+
 		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
 		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
 		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
 		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
-						
-		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
+
+		if($MDParameters[0]['FontSizeSubMenu'] != 0)
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
 			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
 		}
-		else 
+		else
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
 			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
 		}
-		
+
 		$this->context->smarty->assign(array(
 			'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
 			'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
@@ -1904,44 +1904,44 @@ $this->_html .= '<td>';
 			'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
 			'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
 			'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
-			'HeightCalculateEvo' => $HeightCalculate, 
+			'HeightCalculateEvo' => $HeightCalculate,
 			'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
-			'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
-			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
-			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
-			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
+			'PaddingTopCalculateEvo' => $PaddingTopCalculate,
+			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'],
+			'MarginTopEvo' => $MDParameters[0]['marginTop'],
+			'MarginBottomEvo' => $MDParameters[0]['marginBottom'],
 			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
 			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
 			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
 			'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
-		);				
-		
+		);
+
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
 		$this->context->smarty->assign('menuMDEvo', $this->_menu);
-		
+
 		return $this->display(__FILE__, 'views/templates/front/navmegadrownevo.tpl');
-	}	
+	}
   function hookDisplayHeader($params)
   {
 		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		
+
 		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
 		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
 		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
 		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
-		
-		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
+
+		if($MDParameters[0]['FontSizeSubMenu'] != 0)
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
 			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
 		}
-		else 
+		else
 		{
 			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
 			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
 		}
-		
+
 		$this->context->smarty->assign(array(
 			'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
 			'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
@@ -1963,21 +1963,25 @@ $this->_html .= '<td>';
 			'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
 			'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
 			'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
-			'HeightCalculateEvo' => $HeightCalculate, 
+			'HeightCalculateEvo' => $HeightCalculate,
 			'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
-			'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
-			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
-			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
-			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
+			'PaddingTopCalculateEvo' => $PaddingTopCalculate,
+			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'],
+			'MarginTopEvo' => $MDParameters[0]['marginTop'],
+			'MarginBottomEvo' => $MDParameters[0]['marginBottom'],
 			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
 			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
 			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
 			'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
-		);				
-		
+		);
+
 		$this->context->smarty->assign('pathMDEvo', $this->_path);
 		$this->context->smarty->assign('menuMDEvo', $this->_menu);
-		
+
+                $this->context->controller->addJS(($this->_path).'/views/js/jquery.hoverIntent.minified.js', 'all');
+                $this->context->controller->addCSS(($this->_path).'/views/css/navmegadrownEvo.css', 'all');
+                $this->context->controller->addJS(($this->_path).'/views/js/navmegadrownEvo.js');
+
 		return $this->display(__FILE__, 'views/templates/front/cssnavmegadrownevo.tpl');
   }
 }
