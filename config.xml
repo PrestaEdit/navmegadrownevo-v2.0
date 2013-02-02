@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-        <module>
-            <name>navmegadrownevo</name>
-            <displayName><![CDATA[MeNu MeGa DrOwN Evolution]]></displayName>
-            <version><![CDATA[2.2.3]]></version>
-            <description><![CDATA[Ajouter un MeNu MeGa DrOwN Evolution.]]></description>
-            <author><![CDATA[PrestaEdit]]></author>
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>navmegadrownevo</name>
+            <displayName><![CDATA[MeNu MeGa DrOwN Evolution]]></displayName>
+            <version><![CDATA[2.3.2]]></version>
+            <description><![CDATA[Ajouter un MeNu MeGa DrOwN Evolution.]]></description>
+            <author><![CDATA[PrestaEdit]]></author>
             <tab><![CDATA[front_office_features]]></tab>
-	<confirmUninstall>Are you sure you want to delete this module ?</confirmUninstall>
-            <is_configurable>1</is_configurable>
+	<confirmUninstall>Are you sure you want to delete this module ?</confirmUninstall>
+            <is_configurable>1</is_configurable>
             <need_instance>0</need_instance>
-	<limited_countries></limited_countries>
+	<limited_countries></limited_countries>
         </module>

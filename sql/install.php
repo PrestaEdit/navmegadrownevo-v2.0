@@ -6,14 +6,14 @@
 	// Create Table in Database		
 	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'admevo_parameters` (
 	  `MenuWidth` INT NOT NULL default 980, 
-	  `MenuHeight` INT NOT NULL default 45, 
-	  `MinButtonWidth` INT NOT NULL default 100, 
+	  `MenuHeight` INT NOT NULL default 35, 
+	  `MinButtonWidth` INT NOT NULL default 98, 
 	  `columnSize` INT NOT NULL default 150, 
 	  `paddingLeft` INT NOT NULL default 0, 
 	  `marginTop` INT NOT NULL default 0, 
 	  `marginBottom` INT NOT NULL default 10, 
 	  `GeneralColor` VARCHAR(6) NOT NULL default "383838", 
-	  `FontSizeMenu` INT NOT NULL default 12, 
+	  `FontSizeMenu` INT NOT NULL default 11, 
 	  `FontSizeSubMenu` INT NOT NULL default 11, 
 	  `FontSizeSubSubMenu` INT NOT NULL default 10, 
 	  `ColorFontMenu` VARCHAR(6) NOT NULL default "ffffff", 
@@ -36,7 +36,8 @@
 	  `extensionMenu` VARCHAR(6) NULL default "", 
 	  `extensionBout` VARCHAR(6) NULL default "", 
 	  `extensionBack` VARCHAR(6) NULL default "", 
-	  `extensionArro` VARCHAR(6) NULL default ""
+	  `extensionArro` VARCHAR(6) NULL default "",
+	  `SearchBar` VARCHAR(6) NULL default "off", 
 	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';	
 	
 	
@@ -45,7 +46,7 @@
 	  `order_button` INT NOT NULL, 
 	  `img_name` varchar(255) NULL, 
 	  `img_link` LONGTEXT NULL, 
-	  `buttonColor` VARCHAR(6) NULL default "4e4e4e", 
+	  `buttonColor` VARCHAR(6) NULL default "383838", 
 	  `img_name_background` VARCHAR(255) NULL
 	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';	
 	
@@ -117,5 +118,5 @@
 	(MenuWidth, MenuHeight, MinButtonWidth, GeneralColor, 
 	FontSizeMenu, FontSizeSubMenu, FontSizeSubSubMenu, 
 	ColorFontMenu, ColorFontSubMenu, ColorFontSubSubMenu, VerticalPadding) 
-	VALUES (980, 45, 100, "4e4e4e", 12, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
+	VALUES (980, 35, 98, "383838", 11, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
 	
