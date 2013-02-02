@@ -689,7 +689,7 @@ class navmegadrownEvo extends Module
 		$doneC = $done[$current['infos']['id_parent']];
 
 		$level = $current['infos']['level_depth'] + 1;
-		$img = $level == 1 ? 'lv1.gif' : 'lv'.$level.'_'.($todo == $doneC ? 'f' : 'b').'.gif';
+		$img = $level == 1 ? 'lv1.png' : 'lv'.$level.'_'.($todo == $doneC ? 'f' : 'b').'.png';
 
 		$this->_html .= '
 		<tr class="'.($irow++ % 2 ? 'alt_row' : '').'">
