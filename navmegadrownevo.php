@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.2';
+	 	$this->version = '2.3.4';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -86,6 +86,8 @@ class navmegadrownEvo extends Module
 		$output = "";
 		$errors = array();
 		$errorsNb = 0;
+				
+		$update_cache = false;
 		
 		if(Tools::isSubmit('SubmitButton')) 
 		{
@@ -118,7 +120,7 @@ class navmegadrownEvo extends Module
 			else
 				$output .= $this->displayConfirmation($this->l('Button added'));
 		}
-		if(Tools::isSubmit('SubmitButtonParameters')) 
+		else if(Tools::isSubmit('SubmitButtonParameters')) 
 		{
 			$result = Db::getInstance()->autoExecute(
 				_DB_PREFIX_.'admevo_button', 
@@ -225,7 +227,7 @@ class navmegadrownEvo extends Module
 				$output .= $this->displayConfirmation($this->l('Button updated'));
 			$ButtonIdInEdit = Tools::getValue('ButttonIdToUpdate');
 		}
-		if(Tools::isSubmit('SubmitButtonOrganization')) 
+		else if(Tools::isSubmit('SubmitButtonOrganization')) 
 		{
 			if(trim(Tools::getValue('Organisation')) != '') {
 				$ButtonOrganisation = explode(',', Tools::getValue('Organisation'));
@@ -249,7 +251,7 @@ class navmegadrownEvo extends Module
 			else
 				$output .= $this->displayConfirmation($this->l('Organziation saved'));
 		}
-		if(Tools::isSubmit('SubmitButtonDesign')) 
+		else if(Tools::isSubmit('SubmitButtonDesign')) 
 		{
 			$errorsNb = 0;
 			//Db::getInstance()->delete(_DB_PREFIX_.'admevo_parameters');
@@ -366,8 +368,10 @@ class navmegadrownEvo extends Module
 				$output .= $this->displayError($this->l('Error during the upload'));
 			else
 				$output .= $this->displayConfirmation($this->l('File uploaded and parameters saved'));
+						
+			$this->_clearCache('views/front/cssnavmegadrownevo.tpl');
 		}
-		if(isset($_POST['Action']) && $_POST['Action']!="") 
+		else if(isset($_POST['Action']) && $_POST['Action']!="") 
 		{
 			switch($_POST['Action']) 
 			{
@@ -384,7 +388,7 @@ class navmegadrownEvo extends Module
 					break;
 			}
 		}
-		if(isset($_POST['ActionFile']) && $_POST['ActionFile']!="") 
+		else if(isset($_POST['ActionFile']) && $_POST['ActionFile']!="") 
 		{
 			switch($_POST['ActionFile']) {
 				case "DeleteFile":
@@ -397,7 +401,7 @@ class navmegadrownEvo extends Module
 				break;
 			}
 		}
-		if(isset($_POST['ActionPicture']) && $_POST['ActionPicture']!="") 
+		else if(isset($_POST['ActionPicture']) && $_POST['ActionPicture']!="") 
 		{
 			switch($_POST['ActionPicture']) 
 			{
@@ -463,8 +467,7 @@ class navmegadrownEvo extends Module
 			}			
 			$ButtonIdInEdit = $_POST['idButton'];
 		}
-		//Background SubMenu
-		if(isset($_POST['ActionPictureBackground']) && $_POST['ActionPictureBackground']!="") 
+		else if(isset($_POST['ActionPictureBackground']) && $_POST['ActionPictureBackground']!="") 
 		{
 			switch($_POST['ActionPictureBackground']) {
 				case "UploadPictureBackground":
@@ -507,7 +510,7 @@ class navmegadrownEvo extends Module
 			}
 			$ButtonIdInEdit = $_POST['idButton'];
 		}
-		if(Tools::isSubmit('SubmitDetailSub')) 
+		else if(Tools::isSubmit('SubmitDetailSub')) 
 		{
 			foreach ($languages as $language) {
 				$result = Db::getInstance()->autoExecute(
@@ -523,7 +526,7 @@ class navmegadrownEvo extends Module
 			}			
 			$ButtonIdInEdit = $_POST['idButton'];
 		}
-		if(Tools::isSubmit('SubmitDetailSubTr')) 
+		else if(Tools::isSubmit('SubmitDetailSubTr')) 
 		{
 			foreach ($languages as $language) {
 				$result = Db::getInstance()->autoExecute(
@@ -539,6 +542,9 @@ class navmegadrownEvo extends Module
 			}			
 			$ButtonIdInEdit = Tools::getValue('idButton');
 		}
+				
+		$this->_clearCache('views/front/navmegadrownevo.tpl');
+		
 		return $output.$this->displayForm();
 	}
 	
@@ -1864,129 +1870,149 @@ $this->_html .= '<td>';
 	
 	public function hookDisplayTop($param) 
 	{	
-		$this->makeMegaDrown($this->context->cookie->id_lang);
-		
-		$MDParameters = array();
-		$MDParameters = $this->getParameters();
-				
-		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
-		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
-		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
-		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
+		$this->user_groups =  ($this->context->customer->isLogged() ? $this->context->customer->getGroups() : array(Configuration::get('PS_UNIDENTIFIED_GROUP')));
+		$this->page_name = Dispatcher::getInstance()->getController();
+		$smarty_cache_id = 'navmegadrownevo-'.$this->page_name.'-'.(int)$this->context->shop->id.'-'.implode(', ',$this->user_groups).'-'.(int)$this->context->language->id.'-'.(int)Tools::getValue('id_category').'-'.(int)Tools::getValue('id_manufacturer').'-'.(int)Tools::getValue('id_supplier').'-'.(int)Tools::getValue('id_cms').'-'.(int)Tools::getValue('id_product');
+		$this->context->smarty->cache_lifetime = 31536000;
+		Tools::enableCache();
+		if (!$this->isCached('views/templates/front/navmegadrownevo.tpl', $smarty_cache_id))
+		{
+			$this->makeMegaDrown($this->context->cookie->id_lang);
+			
+			$MDParameters = array();
+			$MDParameters = $this->getParameters();
+					
+			$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
+			$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
+			$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
+			$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
 						
-		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
-		{
-			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
-			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
+			if($MDParameters[0]['FontSizeSubMenu'] != 0) 
+			{
+				$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
+				$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
+			}
+			else 
+			{
+				$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
+				$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
+			}
+		
+			$this->context->smarty->assign(array(
+				'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
+				'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
+				'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
+				'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
+				'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
+				'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],
+				'FontSizeSubSubMenuEvo' => $MDParameters[0]['FontSizeSubSubMenu'],
+				'ColorFontMenuEvo' => $MDParameters[0]['ColorFontMenu'],
+				'ColorFontSubMenuEvo' => $MDParameters[0]['ColorFontSubMenu'],
+				'ColorFontSubSubMenuEvo' => $MDParameters[0]['ColorFontSubSubMenu'],
+				'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
+				'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
+				'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
+				'widthTD1Evo' => $MDParameters[0]['widthTD1'],
+				'widthTD3Evo' => $MDParameters[0]['widthTD3'],
+				'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
+				'bgColorTD1Evo' => $MDParameters[0]['backgroundTD1'],
+				'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
+				'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
+				'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
+				'HeightCalculateEvo' => $HeightCalculate, 
+				'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
+				'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
+				'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
+				'MarginTopEvo' => $MDParameters[0]['marginTop'], 
+				'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
+				'bg_menuEvo' => $MDParameters[0]['bg_menu'],
+				'bg_boutEvo' => $MDParameters[0]['bg_bout'],
+				'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
+				'sub_bgEvo' => $MDParameters[0]['sub_bg'], 
+				'MENUEVO_SEARCH' => $MDParameters[0]['SearchBar']
+				)
+			);				
+		
+			$this->context->smarty->assign('pathMDEvo', $this->_path);
+			$this->context->smarty->assign('menuMDEvo', $this->_menu);
 		}
-		else 
-		{
-			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
-			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
-		}
 		
-		$this->context->smarty->assign(array(
-			'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
-			'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
-			'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
-			'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
-			'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
-			'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],
-			'FontSizeSubSubMenuEvo' => $MDParameters[0]['FontSizeSubSubMenu'],
-			'ColorFontMenuEvo' => $MDParameters[0]['ColorFontMenu'],
-			'ColorFontSubMenuEvo' => $MDParameters[0]['ColorFontSubMenu'],
-			'ColorFontSubSubMenuEvo' => $MDParameters[0]['ColorFontSubSubMenu'],
-			'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
-			'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
-			'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
-			'widthTD1Evo' => $MDParameters[0]['widthTD1'],
-			'widthTD3Evo' => $MDParameters[0]['widthTD3'],
-			'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
-			'bgColorTD1Evo' => $MDParameters[0]['backgroundTD1'],
-			'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
-			'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
-			'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
-			'HeightCalculateEvo' => $HeightCalculate, 
-			'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
-			'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
-			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
-			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
-			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
-			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
-			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
-			'sub_bgEvo' => $MDParameters[0]['sub_bg'], 
-			'MENUEVO_SEARCH' => $MDParameters[0]['SearchBar']
-			)
-		);				
-		
-		$this->context->smarty->assign('pathMDEvo', $this->_path);
-		$this->context->smarty->assign('menuMDEvo', $this->_menu);
-		
-		return $this->display(__FILE__, 'views/templates/front/navmegadrownevo.tpl');
+		$html = $this->display(__FILE__, 'views/templates/front/navmegadrownevo.tpl', $smarty_cache_id);
+		Tools::restoreCacheSettings();
+		return $html;
 	}	
   function hookDisplayHeader($params)
   {
-		$MDParameters = array();
-		$MDParameters = $this->getParameters();
-		
-		$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
-		$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
-		$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
-		$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
-		
-		if($MDParameters[0]['FontSizeSubMenu'] != 0) 
+  	$this->user_groups =  ($this->context->customer->isLogged() ? $this->context->customer->getGroups() : array(Configuration::get('PS_UNIDENTIFIED_GROUP')));
+		$this->page_name = Dispatcher::getInstance()->getController();
+		$smarty_cache_id = 'navmegadrownevo-'.$this->page_name.'-'.(int)$this->context->shop->id.'-'.implode(', ',$this->user_groups).'-'.(int)$this->context->language->id.'-'.(int)Tools::getValue('id_category').'-'.(int)Tools::getValue('id_manufacturer').'-'.(int)Tools::getValue('id_supplier').'-'.(int)Tools::getValue('id_cms').'-'.(int)Tools::getValue('id_product');
+		$this->context->smarty->cache_lifetime = 31536000;
+		Tools::enableCache();
+		if (!$this->isCached('views/templates/front/cssnavmegadrownevo.tpl', $smarty_cache_id))
 		{
-			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
-			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
+			$MDParameters = array();
+			$MDParameters = $this->getParameters();
+			
+			$MDParameters[0]['bg_menu'] 			= $this->checkIfImageExist('bg_menu', $MDParameters[0]['extensionMenu']);
+			$MDParameters[0]['bg_bout'] 			= $this->checkIfImageExist('bg_bout', $MDParameters[0]['extensionBout']);;
+			$MDParameters[0]['navlist_arrow'] = $this->checkIfImageExist('navlist_arrow', $MDParameters[0]['extensionArro']);;
+			$MDParameters[0]['sub_bg'] 				= $this->checkIfImageExist('sub_bg', $MDParameters[0]['extensionBack']);
+			
+			if($MDParameters[0]['FontSizeSubMenu'] != 0) 
+			{
+				$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])) , 0);
+				$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2 + ($MDParameters[0]['MenuHeight']/$MDParameters[0]['FontSizeSubMenu'])), 0 );
+			}
+			else 
+			{
+				$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
+				$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
+			}
+			
+			$this->context->smarty->assign(array(
+				'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
+				'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
+				'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
+				'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
+				'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
+				'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],
+				'FontSizeSubSubMenuEvo' => $MDParameters[0]['FontSizeSubSubMenu'],
+				'ColorFontMenuEvo' => $MDParameters[0]['ColorFontMenu'],
+				'ColorFontSubMenuEvo' => $MDParameters[0]['ColorFontSubMenu'],
+				'ColorFontSubSubMenuEvo' => $MDParameters[0]['ColorFontSubSubMenu'],
+				'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
+				'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
+				'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
+				'widthTD1Evo' => $MDParameters[0]['widthTD1'],
+				'widthTD3Evo' => $MDParameters[0]['widthTD3'],
+				'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
+				'bgColorTD1Evo' => $MDParameters[0]['backgroundTD1'],
+				'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
+				'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
+				'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
+				'HeightCalculateEvo' => $HeightCalculate, 
+				'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
+				'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
+				'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
+				'MarginTopEvo' => $MDParameters[0]['marginTop'], 
+				'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
+				'bg_menuEvo' => $MDParameters[0]['bg_menu'],
+				'bg_boutEvo' => $MDParameters[0]['bg_bout'],
+				'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
+				'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
+			);				
+			
+			$this->context->smarty->assign('pathMDEvo', $this->_path);
+			$this->context->smarty->assign('menuMDEvo', $this->_menu);
 		}
-		else 
-		{
-			$HeightCalculate = round( ($MDParameters[0]['MenuHeight']/2 + $MDParameters[0]['FontSizeSubMenu']/2) , 0);
-			$PaddingTopCalculate = round( $MDParameters[0]['MenuHeight'] - ($MDParameters[0]['MenuHeight']/2), 0 );
-		}
 		
-		$this->context->smarty->assign(array(
-			'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
-			'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
-			'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
-			'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
-			'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
-			'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],
-			'FontSizeSubSubMenuEvo' => $MDParameters[0]['FontSizeSubSubMenu'],
-			'ColorFontMenuEvo' => $MDParameters[0]['ColorFontMenu'],
-			'ColorFontSubMenuEvo' => $MDParameters[0]['ColorFontSubMenu'],
-			'ColorFontSubSubMenuEvo' => $MDParameters[0]['ColorFontSubSubMenu'],
-			'ColorFontMenuHoverEvo' => $MDParameters[0]['ColorFontMenuHover'],
-			'ColorFontSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubMenuHover'],
-			'ColorFontSubSubMenuHoverEvo' => $MDParameters[0]['ColorFontSubSubMenuHover'],
-			'widthTD1Evo' => $MDParameters[0]['widthTD1'],
-			'widthTD3Evo' => $MDParameters[0]['widthTD3'],
-			'bgColorTR1Evo' => $MDParameters[0]['backgroundTR1'],
-			'bgColorTD1Evo' => $MDParameters[0]['backgroundTD1'],
-			'bgColorTD2Evo' => $MDParameters[0]['backgroundTD2'],
-			'bgColorTD3Evo' => $MDParameters[0]['backgroundTD3'],
-			'VerticalPaddingEvo' => $MDParameters[0]['VerticalPadding'],
-			'HeightCalculateEvo' => $HeightCalculate, 
-			'ColumnWidthEvo' => $MDParameters[0]['columnSize'],
-			'PaddingTopCalculateEvo' => $PaddingTopCalculate, 
-			'PaddingLeftEvo' => $MDParameters[0]['paddingLeft'], 
-			'MarginTopEvo' => $MDParameters[0]['marginTop'], 
-			'MarginBottomEvo' => $MDParameters[0]['marginBottom'], 
-			'bg_menuEvo' => $MDParameters[0]['bg_menu'],
-			'bg_boutEvo' => $MDParameters[0]['bg_bout'],
-			'navlist_arrowEvo' => $MDParameters[0]['navlist_arrow'],
-			'sub_bgEvo' => $MDParameters[0]['sub_bg'] )
-		);				
+		$this->context->controller->addJS(($this->_path).'/views/js/jquery.hoverIntent.minified.js', 'all');
+		$this->context->controller->addCSS(($this->_path).'/views/css/navmegadrownEvo.css', 'all');
+		$this->context->controller->addJS(($this->_path).'/views/js/navmegadrownEvo.js');
 		
-		$this->context->smarty->assign('pathMDEvo', $this->_path);
-		$this->context->smarty->assign('menuMDEvo', $this->_menu);
-		
-	 $this->context->controller->addJS(($this->_path).'/views/js/jquery.hoverIntent.minified.js', 'all');
-	 $this->context->controller->addCSS(($this->_path).'/views/css/navmegadrownEvo.css', 'all');
-	 $this->context->controller->addJS(($this->_path).'/views/js/navmegadrownEvo.js');
-		
-		return $this->display(__FILE__, 'views/templates/front/cssnavmegadrownevo.tpl');
+		$html = $this->display(__FILE__, 'views/templates/front/cssnavmegadrownevo.tpl', $smarty_cache_id);
+		Tools::restoreCacheSettings();
+		return $html;
   }
 }
 ?>

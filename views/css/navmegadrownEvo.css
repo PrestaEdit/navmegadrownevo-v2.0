@@ -27,6 +27,7 @@ ul#topnavEvo li {
 }
 
 ul#topnavEvo li a {
+	font-weight:normal;
 	float: left; 
 	text-decoration: none;
 	text-align: center;
@@ -116,6 +117,7 @@ ul#topnavEvo .sub ul li a {
 	float: left; 
 	text-indent: 0;
 	height: auto;
+	width : 80%;
 	display: block;
 	text-decoration: none;
 	align: left;
