@@ -37,7 +37,7 @@
 	  `extensionBout` VARCHAR(6) NULL default "", 
 	  `extensionBack` VARCHAR(6) NULL default "", 
 	  `extensionArro` VARCHAR(6) NULL default "",
-	  `SearchBar` VARCHAR(6) NULL default "off", 
+	  `SearchBar` VARCHAR(6) NULL default "off" 
 	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';	
 	
 	

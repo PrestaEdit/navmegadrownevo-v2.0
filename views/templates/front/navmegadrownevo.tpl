@@ -4,7 +4,7 @@
 		<div class="container">
 			<ul id="topnavEvo">
 				{$menuMDEvo}
-				{if $MENUEVO_SEARCH}
+				{if $MENUEVO_SEARCH == "on"}
 				<li class="sf-search noBack" style="float:right">
 					<form id="searchbox" action="{$link->getPageLink('search')}" method="get">
 						<p>

@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.4';
+	 	$this->version = '2.3.5';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
