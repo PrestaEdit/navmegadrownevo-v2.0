@@ -11,7 +11,6 @@
 		padding-left : {/literal}{$PaddingLeftEvo}{literal}px;
 	}
 	ul#topnavEvo li a {
-		font-weight:normal;
 		height: {/literal}{$HeightCalculateEvo}{literal}px;
 		color: #{/literal}{$ColorFontMenuEvo}{literal};
 		padding-top: {/literal}{$PaddingTopCalculateEvo}{literal}px;
@@ -23,8 +22,8 @@
 		color: #{/literal}{$ColorFontMenuHoverEvo}{literal};
 	}
 	{/literal}{if $bg_boutEvo.exist==1}{literal}
-	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover {
-		background-position: 0 -{/literal}{$MenuHeightEvo}{literal}px;
+	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover { 
+		background-position: 0 -{/literal}{$MenuHeightEvo}{literal}px; 
 	}
 	{/literal}{/if}{literal}
 
@@ -49,11 +48,11 @@
 	.megaDrownTD3 {
 		background-color:#{/literal}{$bgColorTD3Evo}{literal};
 	}
-
+	
 	ul#topnavEvo li .sub {
 		padding-top: 10px;
 	}
-
+	
 	ul#topnavEvo li .sub ul{
 		width: {/literal}{$ColumnWidthEvo}{literal}px;
 		margin-left: 10px;
@@ -69,7 +68,7 @@
 	}
 	ul#topnavEvo .sub ul li.stitle a:hover {
 		color: #{/literal}{$ColorFontSubMenuHoverEvo}{literal};
-
+		
 	}
 	ul#topnavEvo .sub ul li a {
 		{/literal}{if $navlist_arrowEvo.exist == 1}{literal}
@@ -78,7 +77,6 @@
 		padding: {/literal}{$VerticalPaddingEvo}{literal}px 5px {/literal}{$VerticalPaddingEvo}{literal}px 15px;
 		color: #{/literal}{$ColorFontSubSubMenuEvo}{literal};
 		font-size: {/literal}{$FontSizeSubSubMenuEvo}{literal}px;
-		width : 80%;
 	}
 {/literal}
 
