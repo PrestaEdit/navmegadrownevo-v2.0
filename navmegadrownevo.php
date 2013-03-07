@@ -782,7 +782,7 @@ $this->_html .= '<td>';
 		$this->_html .='
 			<script type="text/javascript">id_language = Number('.$defaultLanguage.');</script>
 			<script type="text/javascript" src="'.$this->_path.'views/js/jquery-sortable.js"></script>
-			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tiny_mce/tiny_mce.js"></script>
 			
 			<script type="text/javascript">
 					tinyMCE.init({
@@ -810,7 +810,7 @@ $this->_html .= '<td>';
 						media_external_list_url : "lists/media_list.js",
 						elements : "nourlconvert",
 						convert_urls : false,
-						language : "'.(file_exists(_PS_ROOT_DIR_.'/js/tinymce/jscripts/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en').'"
+						language : "'.(file_exists(_PS_ROOT_DIR_.'/js/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en').'"
 						
 					});
 			//tinyMCEInit(\'textarea.rte\');
