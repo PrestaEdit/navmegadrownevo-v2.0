@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.5';
+	 	$this->version = '2.3.7';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -259,6 +259,7 @@ class navmegadrownEvo extends Module
 			Tools::getValue('MenuWidth')=="" 			? false : $tabDesign["MenuWidth"] 			= Tools::getValue('MenuWidth');
 			Tools::getValue('MenuHeight')=="" 			? false : $tabDesign["MenuHeight"] 			= Tools::getValue('MenuHeight');
 			Tools::getValue('MinWidthButton')=="" 		? false : $tabDesign["MinButtonWidth"] 		= Tools::getValue('MinWidthButton');
+			Tools::getValue('MaxWidthButton')=="" 		? false : $tabDesign["MaxButtonWidth"] 		= Tools::getValue('MaxWidthButton');
 			Tools::getValue('ColumnSize')=="" 			? false : $tabDesign["columnSize"] 			= Tools::getValue('ColumnSize');
 			Tools::getValue('paddingLeft')=="" 			? false : $tabDesign["paddingLeft"] 		= Tools::getValue('paddingLeft');
 			Tools::getValue('marginTop')=="" 			? false : $tabDesign["marginTop"] 			= Tools::getValue('marginTop');
@@ -1073,6 +1074,7 @@ $this->_html .= '<td>';
 		$this->_html .= '<tr><td>'.$this->l('Menu width').' : </td><td><input type="text" name="MenuWidth" value="'.$MDParameters[0]['MenuWidth'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('Menu height').' : </td><td><input type="text" name="MenuHeight" value="'.$MDParameters[0]['MenuHeight'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('Min width button').' : </td><td><input type="text" name="MinWidthButton" value="'.$MDParameters[0]['MinButtonWidth'].'">&nbsp;px<sup>*</sup></td></tr>';
+		$this->_html .= '<tr><td>'.$this->l('Max width button').' : </td><td><input type="text" name="MaxWidthButton" value="'.$MDParameters[0]['MaxButtonWidth'].'">&nbsp;px<sup>*</sup> (0 = no limit)</td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('Padding left').' : </td><td><input type="text" name="paddingLeft" value="'.$MDParameters[0]['paddingLeft'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('Margin top').' : </td><td><input type="text" name="marginTop" value="'.$MDParameters[0]['marginTop'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('Margin bottom').' : </td><td><input type="text" name="marginBottom" value="'.$MDParameters[0]['marginBottom'].'">&nbsp;px<sup>*</sup></td></tr>';
@@ -1902,6 +1904,7 @@ $this->_html .= '<td>';
 				'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
 				'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
 				'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
+				'MaxButtonWidthEvo' => $MDParameters[0]['MaxButtonWidth'],
 				'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
 				'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
 				'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],
@@ -1973,6 +1976,7 @@ $this->_html .= '<td>';
 				'MenuWidthEvo' => ($MDParameters[0]['MenuWidth'] - $MDParameters[0]['paddingLeft']),
 				'MenuHeightEvo' => $MDParameters[0]['MenuHeight'],
 				'MinButtonWidthEvo' => $MDParameters[0]['MinButtonWidth'],
+				'MaxButtonWidthEvo' => $MDParameters[0]['MaxButtonWidth'],
 				'GeneralColorEvo' => $MDParameters[0]['GeneralColor'],
 				'FontSizeMenuEvo' => $MDParameters[0]['FontSizeMenu'],
 				'FontSizeSubMenuEvo' => $MDParameters[0]['FontSizeSubMenu'],

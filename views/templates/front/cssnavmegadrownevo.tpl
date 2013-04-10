@@ -16,6 +16,14 @@
 		padding-top: {/literal}{$PaddingTopCalculateEvo}{literal}px;
 		font-size: {/literal}{$FontSizeMenuEvo}{literal}px;
 		min-width: {/literal}{$MinButtonWidthEvo}{literal}px;
+		{/literal}
+		{if $MaxButtonWidthEvo > 0}
+			{literal}			
+				max-width: {/literal}{$MaxButtonWidthEvo}{literal}px;
+				word-wrap: break-word;
+			{/literal}
+		{/if}
+		{literal}
 		_width: {/literal}{$MinButtonWidthEvo}{literal}px;
 	}
 	ul#topnavEvo li:hover a, ul#topnavEvo li a:hover {
