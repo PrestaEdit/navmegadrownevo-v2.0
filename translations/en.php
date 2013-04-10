@@ -1,4 +1,4 @@
-<?php
-
-global $_MODULE;
-$_MODULE = array();
+<?php
+
+global $_MODULE;
+$_MODULE = array();

@@ -7,7 +7,8 @@
 	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'admevo_parameters` (
 	  `MenuWidth` INT NOT NULL default 980, 
 	  `MenuHeight` INT NOT NULL default 35, 
-	  `MinButtonWidth` INT NOT NULL default 98, 
+	  `MinButtonWidth` INT NOT NULL default 98,
+	  `MaxButtonWidth` INT NOT NULL default 0, 
 	  `columnSize` INT NOT NULL default 150, 
 	  `paddingLeft` INT NOT NULL default 0, 
 	  `marginTop` INT NOT NULL default 0, 
@@ -115,8 +116,8 @@
 	// Insert Datas
 	$sql[] = '
 	INSERT INTO '._DB_PREFIX_.'admevo_parameters 
-	(MenuWidth, MenuHeight, MinButtonWidth, GeneralColor, 
+	(MenuWidth, MenuHeight, MinButtonWidth, MaxButtonWidth, GeneralColor, 
 	FontSizeMenu, FontSizeSubMenu, FontSizeSubSubMenu, 
 	ColorFontMenu, ColorFontSubMenu, ColorFontSubSubMenu, VerticalPadding) 
-	VALUES (980, 35, 98, "383838", 11, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
+	VALUES (980, 35, 98, 0, "383838", 11, 11, 10, "ffffff", "ffffff", "ffffff", 5);';
 	
