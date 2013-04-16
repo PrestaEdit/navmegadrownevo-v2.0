@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.7';
+	 	$this->version = '2.3.8';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -714,12 +714,21 @@ $this->_html .= '<td>';
 				<tr><td>'.$this->l('Position').'&nbsp;:&nbsp;</td><td>'.$this->l('Category').'&nbsp;<select name="columnBox_'.$id_category.'" style="font-size : 10px">';
 				for($c=1; $c<=10; $c++) 
 	$this->_html .= '<option value="'.$c.'" '.(isset($CategoryColumn[$id_category]) && $CategoryColumn[$id_category] == $c ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Column').' '.$c.'&nbsp;&nbsp;</option>';
-	$this->_html .= '</select>&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;<select name="lineBox_'.$id_category.'" style="font-size : 10px">';
+	$this->_html .= '</select>';
+	
+	// Under Category
+	$this->_html .= '&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;';
+	$this->_html .= '<select name="lineBox_'.$id_category.'" style="font-size : 10px">';	
 	for($i=1;$i<=10;$i++)
-		$this->_html .= '<option value="'.$i.'" '.(isset($CategoryLine[$id_category]) AND ($CategoryLine[$id_category] == $i) ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' '.$i.'&nbsp;&nbsp;</option>';
-	$this->_html .= '</select>&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
-					<option value="0" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 0 ? " selected" : false).'>'.$this->l('disabled').'</option>
-					<option value="1" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 1 || $CategoryState[$id_category] == "" ? " selected" : false).'>'.$this->l('enabled').'</option>
+		$this->_html .= '<option value="'.$i.'" '.(isset($CategoryLine[$id_category]) && $CategoryLine[$id_category] == $i ? 'selected="selected"' : false).'>
+											'.$this->l('Line').' '.$i.'
+										</option>';	
+	$this->_html .= '</select>';
+	// End Under Category
+		
+	$this->_html .= '&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
+					<option value="0" '.(isset($CategoryState[$id_category]) && $CategoryState[$id_category] == 0 ? 'selected="selected"' : false).'>'.$this->l('disabled').'</option>
+					<option value="1" '.(isset($CategoryState[$id_category]) && $CategoryState[$id_category] == 1 ? 'selected="selected"' : false).'>'.$this->l('enabled').'</option>
 				</select></td></tr>
 				<tr><td>'.$this->l('Name').'&nbsp;:&nbsp;</td><td>';
 				
@@ -991,9 +1000,8 @@ $this->_html .= '<td>';
 							padding-top : 3px;	
 						}
 						';
-			for($k=2;$k<=13; $k++) {
 				$this->_html .= '
-				#colorSelector'.$k.' {
+				.colorSelector {
 					position: absolute;
 					top: 0;
 					left: 0;
@@ -1001,7 +1009,7 @@ $this->_html .= '<td>';
 					height: 36px;
 					background: url('.$this->_path.'/views/img/select2.png);
 				}
-				#colorSelector'.$k.' div {
+				.colorSelector div {
 					position: absolute;
 					top: 4px;
 					left: 4px;
@@ -1009,7 +1017,7 @@ $this->_html .= '<td>';
 					height: 28px;
 					background: url('.$this->_path.'/views/img/select2.png) center;
 				}
-				#colorpickerHolder'.$k.' {
+				.colorpickerHolder {
 					top: 32px;
 					left: 0;
 					width: 356px;
@@ -1017,48 +1025,47 @@ $this->_html .= '<td>';
 					overflow: hidden;
 					position: absolute;
 				}
-				#colorpickerHolder'.$k.' .colorpicker {
+				.colorpickerHolder .colorpicker {
 					background-image: url('.$this->_path.'/views/img/custom_background.png);
 					position: absolute;
 					bottom: 0;
 					left: 0;
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hue div {
+				.colorpickerHolder .colorpicker_hue div {
 					background-image: url('.$this->_path.'/views/img/custom_indic.gif);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hex {
+				.colorpickerHolder .colorpicker_hex {
 					background-image: url('.$this->_path.'/views/img/custom_hex.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_r {
+				.colorpickerHolder .colorpicker_rgb_r {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_r.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_g {
+				.colorpickerHolder .colorpicker_rgb_g {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_g.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_b {
+				.colorpickerHolder .colorpicker_rgb_b {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_b.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_ss {
+				.colorpickerHolder .colorpicker_hsb_ss {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_s.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_h {
+				.colorpickerHolder .colorpicker_hsb_h {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_h.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_b {
+				.colorpickerHolder .colorpicker_hsb_b {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_b.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_submit {
+				.colorpickerHolder .colorpicker_submit {
 					background-image: url('.$this->_path.'/views/img/custom_submit.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker input {
+				.colorpickerHolder .colorpicker input {
 					color: #778398;
 				}
-				#customWidget'.$k.' {
+				.customWidget {
 					position: relative;
 					height: 36px;
 				}				
 				';
-			}
 			$this->_html.= '</style>';
 
 		if (!is_writable(dirname(__FILE__).'/views/img/'))
@@ -1081,9 +1088,9 @@ $this->_html .= '<td>';
 		$this->_html .= '<tr><td>'.$this->l('Width column').' : </td><td><input type="text" name="ColumnSize" value="'.$MDParameters[0]['columnSize'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('General color').' : </td>';
 		$this->_html .= '<td><input type="hidden" name="GeneralColor" value="'.$MDParameters[0]['GeneralColor'].'" id="HiddenColor2">
-							<div id="customWidget">
-								<div id="colorSelector2"><div style="background-color: #'.$MDParameters[0]['GeneralColor'].'"></div></div>
-								<div id="colorpickerHolder2" style="z-index : 1000">
+							<div id="customWidget2" class="customWidget">
+								<div id="colorSelector2" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['GeneralColor'].'"></div></div>
+								<div id="colorpickerHolder2" class="colorpickerHolder" style="z-index : 1000">
 								</div>
 							</div>';
 		$this->_html .= '</td></tr>';
@@ -1106,22 +1113,22 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="MenuColor" value="'.$MDParameters[0]['ColorFontMenu'].'" id="HiddenColor3">
 											'.$this->l('Normal').'
-											<div id="customWidget3">
-												<div id="colorSelector3">
+											<div id="customWidget3" class="customWidget">
+												<div id="colorSelector3" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder3" style="z-index : 1000"></div>
+												<div id="colorpickerHolder3" class="colorpickerHolder" style="z-index : 1000"></div>
 											</div>
 										</td><td>
 											'.$this->l('Hover').'
 											<input type="hidden" name="MenuColorHover" value="'.$MDParameters[0]['ColorFontMenuHover'].'" id="HiddenColor6">
-											<div id="customWidget6">
-												<div id="colorSelector6">
+											<div id="customWidget6" class="customWidget">
+												<div id="colorSelector6" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder6" style="z-index : 1000"></div>
+												<div id="colorpickerHolder6" class="colorpickerHolder" style="z-index : 1000"></div>
 											</div>
 										</td>
 									</tr>
@@ -1134,23 +1141,23 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="SubMenuColor" value="'.$MDParameters[0]['ColorFontSubMenu'].'" id="HiddenColor4" />
 											'.$this->l('Normal').'
-											<div id="customWidget4">
-												<div id="colorSelector4">
+											<div id="customWidget4" class="customWidget">
+												<div id="colorSelector4" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder4" id="colorpickerHolder4" ></div>
+												<div id="colorpickerHolder4" class="colorpickerHolder" name="colorpickerHolder4" ></div>
 											</div>							
 										</td>
 										<td>
 											<input type="hidden" name="SubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubMenuHover'].'" id="HiddenColor7" />
 											'.$this->l('Hover').'
-											<div id="customWidget7">
-												<div id="colorSelector7">
+											<div id="customWidget7" class="customWidget">
+												<div id="colorSelector7" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder7" name="colorpickerHolder7" ></div>
+												<div id="colorpickerHolder7" class="colorpickerHolder" name="colorpickerHolder7" ></div>
 											</div>
 										</td>
 									</tr>
@@ -1163,23 +1170,23 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="SubSubMenuColor" value="'.$MDParameters[0]['ColorFontSubSubMenu'].'" id="HiddenColor5" />
 											'.$this->l('Normal').'
-											<div id="customWidget5">
-												<div id="colorSelector5">
+											<div id="customWidget5" class="customWidget">
+												<div id="colorSelector5" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubSubMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder5" name="colorpickerHolder5" ></div>
+												<div id="colorpickerHolder5" class="colorpickerHolder" name="colorpickerHolder5" ></div>
 											</div>							
 										</td>
 										<td>
 											<input type="hidden" name="SubSubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubSubMenuHover'].'" id="HiddenColor8" />
 											'.$this->l('Hover').'
-											<div id="customWidget8">
-												<div id="colorSelector8">
+											<div id="customWidget8" class="customWidget">
+												<div id="colorSelector8" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubSubMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder8" name="colorpickerHolder8" ></div>
+												<div id="colorpickerHolder8" class="colorpickerHolder" name="colorpickerHolder8" ></div>
 											</div>
 										</td>
 									</tr>
@@ -1206,9 +1213,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTR1" value="'.$MDParameters[0]['backgroundTR1'].'" id="HiddenColor13">
-												<div id="customWidget">
-													<div id="colorSelector13"><div style="background-color: #'.$MDParameters[0]['backgroundTR1'].'"></div></div>
-													<div id="colorpickerHolder13" style="z-index : 1000"></div>
+												<div id="customWidget13" class="customWidget">
+													<div id="colorSelector13" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTR1'].'"></div></div>
+													<div id="colorpickerHolder13" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1231,9 +1238,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD1" value="'.$MDParameters[0]['backgroundTD1'].'" id="HiddenColor9">
-												<div id="customWidget">
-													<div id="colorSelector9"><div style="background-color: #'.$MDParameters[0]['backgroundTD1'].'"></div></div>
-													<div id="colorpickerHolder9" style="z-index : 1000"></div>
+												<div id="customWidget9"  class="customWidget">
+													<div id="colorSelector9" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD1'].'"></div></div>
+													<div id="colorpickerHolder9" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1254,9 +1261,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td>'.$this->l('Background Color').'&nbsp;:&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD2" value="'.$MDParameters[0]['backgroundTD2'].'" id="HiddenColor11">
-												<div id="customWidget">
-													<div id="colorSelector11"><div style="background-color: #'.$MDParameters[0]['backgroundTD2'].'"></div></div>
-													<div id="colorpickerHolder11" style="z-index : 1000"></div>
+												<div id="customWidget11" class="customWidget">
+													<div id="colorSelector11" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD2'].'"></div></div>
+													<div id="colorpickerHolder11" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1275,9 +1282,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD3" value="'.$MDParameters[0]['backgroundTD3'].'" id="HiddenColor10">
-												<div id="customWidget">
-													<div id="colorSelector10"><div style="background-color: #'.$MDParameters[0]['backgroundTD3'].'"></div></div>
-													<div id="colorpickerHolder10" style="z-index : 1000"></div>
+												<div id="customWidget10" class="customWidget">
+													<div id="colorSelector10" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD3'].'"></div></div>
+													<div id="colorpickerHolder10" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1558,9 +1565,9 @@ $this->_html .= '<td>';
 							';
 			$this->_html .= '<tr><td colspan="2" style="padding-top : 5px; padding-bottom : 5px" align="left">';
 			$this->_html .= '<table cellpadding="0" cellspacing="0" style="border:0"><tr><td>'.$this->l('Button Color & background sub-menu').'&nbsp;:&nbsp;</td><td style="border:0"><input type="hidden" name="buttonColor" value="'.$ButtonDetail[0]['buttonColor'].'" id="HiddenColor12">
-								<div id="customWidget">
-									<div id="colorSelector12"><div style="background-color: #'.$ButtonDetail[0]['buttonColor'].'"></div></div>
-									<div id="colorpickerHolder12" style="z-index : 1000">
+								<div id="customWidget12" class="customWidget">
+									<div id="colorSelector12" class="colorSelector"><div style="background-color: #'.$ButtonDetail[0]['buttonColor'].'"></div></div>
+									<div id="colorpickerHolder12" class="colorpickerHolder" style="z-index : 1000">
 									</div>
 								</div>
 							</td></tr></table>';
