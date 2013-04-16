@@ -7,15 +7,16 @@ http://www.prestashop.com/forums/topic/195259-module-gratuit-menu-mega-drown-evo
 
 Démonstration
 ====================
-http://prestaedit.com/demo/menumegadrownevolution/
+http://www.prestaedit.com/prestashop/1.5.4.0/navmegadrownmenu/
 
 Téléchargement
 ====================
-Dernière version: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.5.zip
-
-Anciennes versions:
 * 2.3.0: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.0.zip
 * 2.3.1: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.1.zip
 * 2.3.2: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.2.zip
 * 2.3.3: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.3.zip
 * 2.3.4: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.4.zip
+* 2.3.5: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.5.zip
+* 2.3.6: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.6.zip
+* 2.3.7: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.7.zip
+* 2.3.8: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.8.zip
