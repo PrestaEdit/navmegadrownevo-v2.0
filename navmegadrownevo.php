@@ -31,7 +31,7 @@ class navmegadrownEvo extends Module
 	{
 		$this->name = 'navmegadrownevo';
 	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.7';
+	 	$this->version = '2.3.9.4';
 		$this->author = 'PrestaEdit';		
 	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
@@ -42,6 +42,9 @@ class navmegadrownEvo extends Module
 		$this->description = $this->l('Add a MeGa DrOwN mEnU Evolution.');
 		$this->confirmUninstall = $this->l('Are you sure you want to delete this module ?');
 		$this->allow = intval(Configuration::get('PS_REWRITING_SETTINGS'));
+		
+		if(!$this->isRegisteredInHook('displayBackOfficeHeader'))
+			$this->registerHook('displayBackOfficeHeader');	
 	}
 	
 	public function install()
@@ -55,7 +58,8 @@ class navmegadrownEvo extends Module
 		// Install Module  
    	return 	parent::install()
 						&& $this->registerHook('displayTop')			
-						&& $this->registerHook('displayHeader');					
+						&& $this->registerHook('displayHeader')		
+						&& $this->registerHook('displayBackOfficeHeader');					
 	}
 	
 	public function uninstall()
@@ -69,9 +73,7 @@ class navmegadrownEvo extends Module
 		Configuration::deleteByName('MOD_MEGADROWN_ITEMS');
 		
 		// Uninstall Module
-		if (!parent::uninstall() ||
-		    !$this->unregisterHook('displayTop') ||
-		    !$this->unregisterHook('displayHeader'))
+		if (!parent::uninstall())
 			return false;
 
 		return true;
@@ -642,12 +644,19 @@ class navmegadrownEvo extends Module
 		WHERE tb.id_button='.$IdButton.' AND tb.id_parent = '.$IdParent.' AND tbl.id_lang = '.$idLang.' 
 		ORDER BY tb.num_ligne ASC');
 	}	
-	static public function getParameters() {
+	private function getParameters() {
 		return Db::getInstance()->ExecuteS('
 		SELECT *
 		FROM '._DB_PREFIX_.'admevo_parameters LIMIT 1
 		' );
 	}	
+	private function getConfigurations() {
+		return Db::getInstance()->ExecuteS('
+				SELECT *  
+				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
+				ON (tb.id_button=tbl.id_button) 
+				WHERE tbl.id_lang='.(int)$this->context->cookie->id_lang.' ORDER BY order_button ASC, name_button ASC');	
+	}
 	static public function getMaxColumns($IdButton) {
 		$maxCols = 0;
 		$result = Db::getInstance()->ExecuteS('
@@ -714,12 +723,21 @@ $this->_html .= '<td>';
 				<tr><td>'.$this->l('Position').'&nbsp;:&nbsp;</td><td>'.$this->l('Category').'&nbsp;<select name="columnBox_'.$id_category.'" style="font-size : 10px">';
 				for($c=1; $c<=10; $c++) 
 	$this->_html .= '<option value="'.$c.'" '.(isset($CategoryColumn[$id_category]) && $CategoryColumn[$id_category] == $c ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Column').' '.$c.'&nbsp;&nbsp;</option>';
-	$this->_html .= '</select>&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;<select name="lineBox_'.$id_category.'" style="font-size : 10px">';
+	$this->_html .= '</select>';
+	
+	// Under Category
+	$this->_html .= '&nbsp;&bull;&nbsp;'.$this->l('Under category').'&nbsp;';
+	$this->_html .= '<select name="lineBox_'.$id_category.'" style="font-size : 10px">';	
 	for($i=1;$i<=10;$i++)
-		$this->_html .= '<option value="'.$i.'" '.(isset($CategoryLine[$id_category]) AND ($CategoryLine[$id_category] == $i) ? " selected" : false).'>&nbsp;&nbsp;'.$this->l('Line').' '.$i.'&nbsp;&nbsp;</option>';
-	$this->_html .= '</select>&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
-					<option value="0" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 0 ? " selected" : false).'>'.$this->l('disabled').'</option>
-					<option value="1" '.(isset($CategoryState[$id_category]) AND $CategoryState[$id_category] == 1 || $CategoryState[$id_category] == "" ? " selected" : false).'>'.$this->l('enabled').'</option>
+		$this->_html .= '<option value="'.$i.'" '.(isset($CategoryLine[$id_category]) && $CategoryLine[$id_category] == $i ? 'selected="selected"' : false).'>
+											'.$this->l('Line').' '.$i.'
+										</option>';	
+	$this->_html .= '</select>';
+	// End Under Category
+		
+	$this->_html .= '&nbsp;<select id="State_'.$id_category.'" name="State_'.$id_category.'" style="font-size : 10px">
+					<option value="0" '.(isset($CategoryState[$id_category]) && $CategoryState[$id_category] == 0 ? 'selected="selected"' : false).'>'.$this->l('disabled').'</option>
+					<option value="1" '.(isset($CategoryState[$id_category]) && $CategoryState[$id_category] == 1 ? 'selected="selected"' : false).'>'.$this->l('enabled').'</option>
 				</select></td></tr>
 				<tr><td>'.$this->l('Name').'&nbsp;:&nbsp;</td><td>';
 				
@@ -757,6 +775,7 @@ $this->_html .= '<td>';
 				return $output;
 			echo $output;
 	}
+	
 	public function displayForm() 
 	{
 		global $ButtonIdInEdit;
@@ -765,14 +784,10 @@ $this->_html .= '<td>';
 		$iso = Language::getIsoById($defaultLanguage);
 		($ButtonIdInEdit!='' && $ButtonIdInEdit!=0) ? $languageIds = 'ButtonsEdit'.utf8_encode('¤').'Buttons' :$languageIds = 'Buttons';
 		$tabButtonsOrganizate = array();
-		$MDConfiguration = array();
-		$MDConfiguration = Db::getInstance()->ExecuteS('
-				SELECT *  
-				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
-				ON (tb.id_button=tbl.id_button) 
-				WHERE tbl.id_lang='.$this->context->cookie->id_lang.' ORDER BY order_button ASC, name_button ASC');
-		$MDParameters = array();
+		
+		$MDConfiguration = $this->getConfigurations();
 		$MDParameters = $this->getParameters();
+				
 		$this->_html .='
 			<link rel="stylesheet" href="'.$this->_path.'views/css/colorpicker.css" type="text/css" />
 			<link rel="stylesheet" href="'.$this->_path.'views/css/layout.css" type="text/css"/>
@@ -782,7 +797,6 @@ $this->_html .= '<td>';
 		';
 		$this->_html .='
 			<script type="text/javascript">id_language = Number('.$defaultLanguage.');</script>
-			<script type="text/javascript" src="'.$this->_path.'views/js/jquery-sortable.js"></script>
 			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tiny_mce/tiny_mce.js"></script>
 			
 			<script type="text/javascript">
@@ -991,9 +1005,8 @@ $this->_html .= '<td>';
 							padding-top : 3px;	
 						}
 						';
-			for($k=2;$k<=13; $k++) {
 				$this->_html .= '
-				#colorSelector'.$k.' {
+				.colorSelector {
 					position: absolute;
 					top: 0;
 					left: 0;
@@ -1001,7 +1014,7 @@ $this->_html .= '<td>';
 					height: 36px;
 					background: url('.$this->_path.'/views/img/select2.png);
 				}
-				#colorSelector'.$k.' div {
+				.colorSelector div {
 					position: absolute;
 					top: 4px;
 					left: 4px;
@@ -1009,7 +1022,7 @@ $this->_html .= '<td>';
 					height: 28px;
 					background: url('.$this->_path.'/views/img/select2.png) center;
 				}
-				#colorpickerHolder'.$k.' {
+				.colorpickerHolder {
 					top: 32px;
 					left: 0;
 					width: 356px;
@@ -1017,48 +1030,47 @@ $this->_html .= '<td>';
 					overflow: hidden;
 					position: absolute;
 				}
-				#colorpickerHolder'.$k.' .colorpicker {
+				.colorpickerHolder .colorpicker {
 					background-image: url('.$this->_path.'/views/img/custom_background.png);
 					position: absolute;
 					bottom: 0;
 					left: 0;
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hue div {
+				.colorpickerHolder .colorpicker_hue div {
 					background-image: url('.$this->_path.'/views/img/custom_indic.gif);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hex {
+				.colorpickerHolder .colorpicker_hex {
 					background-image: url('.$this->_path.'/views/img/custom_hex.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_r {
+				.colorpickerHolder .colorpicker_rgb_r {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_r.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_g {
+				.colorpickerHolder .colorpicker_rgb_g {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_g.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_rgb_b {
+				.colorpickerHolder .colorpicker_rgb_b {
 					background-image: url('.$this->_path.'/views/img/custom_rgb_b.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_ss {
+				.colorpickerHolder .colorpicker_hsb_ss {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_s.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_h {
+				.colorpickerHolder .colorpicker_hsb_h {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_h.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_hsb_b {
+				.colorpickerHolder .colorpicker_hsb_b {
 					background-image: url('.$this->_path.'/views/img/custom_hsb_b.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker_submit {
+				.colorpickerHolder .colorpicker_submit {
 					background-image: url('.$this->_path.'/views/img/custom_submit.png);
 				}
-				#colorpickerHolder'.$k.' .colorpicker input {
+				.colorpickerHolder .colorpicker input {
 					color: #778398;
 				}
-				#customWidget'.$k.' {
+				.customWidget {
 					position: relative;
 					height: 36px;
 				}				
 				';
-			}
 			$this->_html.= '</style>';
 
 		if (!is_writable(dirname(__FILE__).'/views/img/'))
@@ -1081,9 +1093,9 @@ $this->_html .= '<td>';
 		$this->_html .= '<tr><td>'.$this->l('Width column').' : </td><td><input type="text" name="ColumnSize" value="'.$MDParameters[0]['columnSize'].'">&nbsp;px<sup>*</sup></td></tr>';
 		$this->_html .= '<tr><td>'.$this->l('General color').' : </td>';
 		$this->_html .= '<td><input type="hidden" name="GeneralColor" value="'.$MDParameters[0]['GeneralColor'].'" id="HiddenColor2">
-							<div id="customWidget">
-								<div id="colorSelector2"><div style="background-color: #'.$MDParameters[0]['GeneralColor'].'"></div></div>
-								<div id="colorpickerHolder2" style="z-index : 1000">
+							<div id="customWidget2" class="customWidget">
+								<div id="colorSelector2" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['GeneralColor'].'"></div></div>
+								<div id="colorpickerHolder2" class="colorpickerHolder" style="z-index : 1000">
 								</div>
 							</div>';
 		$this->_html .= '</td></tr>';
@@ -1106,22 +1118,22 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="MenuColor" value="'.$MDParameters[0]['ColorFontMenu'].'" id="HiddenColor3">
 											'.$this->l('Normal').'
-											<div id="customWidget3">
-												<div id="colorSelector3">
+											<div id="customWidget3" class="customWidget">
+												<div id="colorSelector3" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder3" style="z-index : 1000"></div>
+												<div id="colorpickerHolder3" class="colorpickerHolder" style="z-index : 1000"></div>
 											</div>
 										</td><td>
 											'.$this->l('Hover').'
 											<input type="hidden" name="MenuColorHover" value="'.$MDParameters[0]['ColorFontMenuHover'].'" id="HiddenColor6">
-											<div id="customWidget6">
-												<div id="colorSelector6">
+											<div id="customWidget6" class="customWidget">
+												<div id="colorSelector6" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder6" style="z-index : 1000"></div>
+												<div id="colorpickerHolder6" class="colorpickerHolder" style="z-index : 1000"></div>
 											</div>
 										</td>
 									</tr>
@@ -1134,23 +1146,23 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="SubMenuColor" value="'.$MDParameters[0]['ColorFontSubMenu'].'" id="HiddenColor4" />
 											'.$this->l('Normal').'
-											<div id="customWidget4">
-												<div id="colorSelector4">
+											<div id="customWidget4" class="customWidget">
+												<div id="colorSelector4" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder4" id="colorpickerHolder4" ></div>
+												<div id="colorpickerHolder4" class="colorpickerHolder" name="colorpickerHolder4" ></div>
 											</div>							
 										</td>
 										<td>
 											<input type="hidden" name="SubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubMenuHover'].'" id="HiddenColor7" />
 											'.$this->l('Hover').'
-											<div id="customWidget7">
-												<div id="colorSelector7">
+											<div id="customWidget7" class="customWidget">
+												<div id="colorSelector7" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder7" name="colorpickerHolder7" ></div>
+												<div id="colorpickerHolder7" class="colorpickerHolder" name="colorpickerHolder7" ></div>
 											</div>
 										</td>
 									</tr>
@@ -1163,23 +1175,23 @@ $this->_html .= '<td>';
 										<td width="50%">
 											<input type="hidden" name="SubSubMenuColor" value="'.$MDParameters[0]['ColorFontSubSubMenu'].'" id="HiddenColor5" />
 											'.$this->l('Normal').'
-											<div id="customWidget5">
-												<div id="colorSelector5">
+											<div id="customWidget5" class="customWidget">
+												<div id="colorSelector5" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubSubMenu'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder5" name="colorpickerHolder5" ></div>
+												<div id="colorpickerHolder5" class="colorpickerHolder" name="colorpickerHolder5" ></div>
 											</div>							
 										</td>
 										<td>
 											<input type="hidden" name="SubSubMenuColorHover" value="'.$MDParameters[0]['ColorFontSubSubMenuHover'].'" id="HiddenColor8" />
 											'.$this->l('Hover').'
-											<div id="customWidget8">
-												<div id="colorSelector8">
+											<div id="customWidget8" class="customWidget">
+												<div id="colorSelector8" class="colorSelector">
 													<div style="background-color: #'.$MDParameters[0]['ColorFontSubSubMenuHover'].'">
 													</div>
 												</div>
-												<div id="colorpickerHolder8" name="colorpickerHolder8" ></div>
+												<div id="colorpickerHolder8" class="colorpickerHolder" name="colorpickerHolder8" ></div>
 											</div>
 										</td>
 									</tr>
@@ -1206,9 +1218,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTR1" value="'.$MDParameters[0]['backgroundTR1'].'" id="HiddenColor13">
-												<div id="customWidget">
-													<div id="colorSelector13"><div style="background-color: #'.$MDParameters[0]['backgroundTR1'].'"></div></div>
-													<div id="colorpickerHolder13" style="z-index : 1000"></div>
+												<div id="customWidget13" class="customWidget">
+													<div id="colorSelector13" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTR1'].'"></div></div>
+													<div id="colorpickerHolder13" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1231,9 +1243,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD1" value="'.$MDParameters[0]['backgroundTD1'].'" id="HiddenColor9">
-												<div id="customWidget">
-													<div id="colorSelector9"><div style="background-color: #'.$MDParameters[0]['backgroundTD1'].'"></div></div>
-													<div id="colorpickerHolder9" style="z-index : 1000"></div>
+												<div id="customWidget9"  class="customWidget">
+													<div id="colorSelector9" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD1'].'"></div></div>
+													<div id="colorpickerHolder9" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1254,9 +1266,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td>'.$this->l('Background Color').'&nbsp;:&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD2" value="'.$MDParameters[0]['backgroundTD2'].'" id="HiddenColor11">
-												<div id="customWidget">
-													<div id="colorSelector11"><div style="background-color: #'.$MDParameters[0]['backgroundTD2'].'"></div></div>
-													<div id="colorpickerHolder11" style="z-index : 1000"></div>
+												<div id="customWidget11" class="customWidget">
+													<div id="colorSelector11" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD2'].'"></div></div>
+													<div id="colorpickerHolder11" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1275,9 +1287,9 @@ $this->_html .= '<td>';
 										<tr>
 											<td style="border:0">'.$this->l('Background Color').'&nbsp;</td>
 											<td style="border:0"><input type="hidden" name="backgroundTD3" value="'.$MDParameters[0]['backgroundTD3'].'" id="HiddenColor10">
-												<div id="customWidget">
-													<div id="colorSelector10"><div style="background-color: #'.$MDParameters[0]['backgroundTD3'].'"></div></div>
-													<div id="colorpickerHolder10" style="z-index : 1000"></div>
+												<div id="customWidget10" class="customWidget">
+													<div id="colorSelector10" class="colorSelector"><div style="background-color: #'.$MDParameters[0]['backgroundTD3'].'"></div></div>
+													<div id="colorpickerHolder10" class="colorpickerHolder" style="z-index : 1000"></div>
 												</div>
 											</td>
 										</tr>
@@ -1558,9 +1570,9 @@ $this->_html .= '<td>';
 							';
 			$this->_html .= '<tr><td colspan="2" style="padding-top : 5px; padding-bottom : 5px" align="left">';
 			$this->_html .= '<table cellpadding="0" cellspacing="0" style="border:0"><tr><td>'.$this->l('Button Color & background sub-menu').'&nbsp;:&nbsp;</td><td style="border:0"><input type="hidden" name="buttonColor" value="'.$ButtonDetail[0]['buttonColor'].'" id="HiddenColor12">
-								<div id="customWidget">
-									<div id="colorSelector12"><div style="background-color: #'.$ButtonDetail[0]['buttonColor'].'"></div></div>
-									<div id="colorpickerHolder12" style="z-index : 1000">
+								<div id="customWidget12" class="customWidget">
+									<div id="colorSelector12" class="colorSelector"><div style="background-color: #'.$ButtonDetail[0]['buttonColor'].'"></div></div>
+									<div id="colorpickerHolder12" class="colorpickerHolder" style="z-index : 1000">
 									</div>
 								</div>
 							</td></tr></table>';
@@ -1614,8 +1626,10 @@ $this->_html .= '<td>';
 		
 		return	$this->_html;
 	}
-	private function makeMegaDrown($IdLang) 
+	private function makeMegaDrown() 
 	{
+		$IdLang = $this->context->cookie->id_lang;
+		
 		if(Tools::getIsset('id_category'))
 			$ActiveCategory = (int)Tools::getValue('id_category');
 		else
@@ -1640,16 +1654,11 @@ $this->_html .= '<td>';
 				FROM '._DB_PREFIX_.'admevo_button_link_cat 
 				WHERE id_link_cat='.$ActiveCategory);
 		}
-		$MDParameters = array();
 		$MDParameters = $this->getParameters();
-		$MDConfiguration = array();
-		$MDConfiguration = Db::getInstance()->ExecuteS('
-				SELECT *  
-				FROM '._DB_PREFIX_.'admevo_button tb LEFT JOIN '._DB_PREFIX_.'admevo_button_lang tbl 
-				ON (tb.id_button=tbl.id_button) 
-				WHERE tbl.id_lang='.$IdLang.' ORDER BY order_button ASC, name_button ASC');
-		if(sizeof($MDConfiguration)) {
-			foreach($MDConfiguration as $kButton=>$ValButton) {
+		$MDConfiguration = $this->getConfigurations();
+		if(sizeof($MDConfiguration)) 
+		{
+			foreach($MDConfiguration as $kButton => $ValButton) {
 				$tabLinkButton[$ValButton['id_button']] = array();
 				$tabIdLinkCat[$ValButton['id_button']] = array();
 				$tabLinkCustom[$ValButton['id_button']] = array();
@@ -1661,8 +1670,10 @@ $this->_html .= '<td>';
 				else
 					$linkButton = "";
 				$tabLinkButton[$ValButton['id_button']][] = basename($linkButton);
-				if(sizeof($CatMenu)) {
-					foreach($CatMenu as $kMenu=>$ValCat) {
+				if(sizeof($CatMenu)) 
+				{
+					foreach($CatMenu as $kMenu=>$ValCat) 
+					{
 						$tabIdLinkCat[$ValButton['id_button']][$ValCat['id_link_cat']] = $ValCat['id_link_cat'];
 						$DescendantCateogries = Db::getInstance()->ExecuteS('
 							SELECT *  
@@ -1675,8 +1686,10 @@ $this->_html .= '<td>';
 				}
 				$CustomMenu = array();
 				$CustomMenu = $this->getButtonLinksCustom($ValButton['id_button'], $this->context->cookie->id_lang);
-				if(sizeof($CustomMenu)) {
-					foreach($CustomMenu as $kMenu=>$ValMenu) {
+				if(sizeof($CustomMenu)) 
+				{
+					foreach($CustomMenu as $kMenu=>$ValMenu) 
+					{
 						$tabLinkCustom[$ValButton['id_button']][$ValMenu['id_custom']] = basename($ValMenu['link']);
 						$CustomMenuUnder = array();
 						$CustomMenuUnder = $this->getButtonLinksCustomUnder($ValButton['id_button'], $ValMenu['id_custom'], $this->context->cookie->id_lang);
@@ -1687,12 +1700,14 @@ $this->_html .= '<td>';
 				}
 			}
 		}
-		if(sizeof($MDConfiguration)) {
+		if(sizeof($MDConfiguration)) 
+		{
 			$b = 0;
-			foreach($MDConfiguration as $kButton=>$ValButton) {
+			foreach($MDConfiguration as $kButton=>$ValButton) 
+			{
 				$LinkButton = $this->getButtonLinks($ValButton['id_button']);
 				(!array_key_exists(0 , $LinkButton)) ? $linkButton = "#" : $linkButton = $LinkButton[0]['link'];
-				$this->_menu .= '<li style="background-color: #'.$ValButton['buttonColor'].'" class="liBouton">'.$this->eol;
+				$this->_menu .= '<li style="background-color: #'.$ValButton['buttonColor'].'" class="liBouton liBouton'.$b.'">'.$this->eol;
 				strpos(strtolower($ValButton['name_button']), "<br />") ? $decal="margin-top : -5px;" : $decal="" ;
 				$this->_menu .= '<div'.($decal!=0 ? ' style="'.$decal.'"' : '').'><a href="'.$linkButton.'" '.($linkButton=="#" ? "onclick='return false'" : false).' class="buttons" '.(in_array($ActiveCategory, $tabIdLinkCat[$ValButton['id_button']]) || in_array(basename($_SERVER['REQUEST_URI']), $tabLinkCustom[$ValButton['id_button']]) || in_array(basename($_SERVER['REQUEST_URI']), $tabLinkButton[$ValButton['id_button']]) ? 'style="background-position : 0 -'.$MDParameters[0]['MenuHeight'].'px; color: #'.$MDParameters[0]['ColorFontMenuHover'].'"' : false ).'>'.$ValButton['name_button'].'</a></div>'.$this->eol;
 				$CatMenu 	= array();
@@ -1704,8 +1719,10 @@ $this->_html .= '<td>';
 				$MaxLines	= 0;
 				$tabLines	= array();
 				$m=0;
-				if(sizeof($CatMenu)) {
-					foreach($CatMenu as $kMenu=>$ValCat) {
+				if(sizeof($CatMenu)) 
+				{
+					foreach($CatMenu as $kMenu=>$ValCat) 
+					{
 						$tabLines[$kButton][$ValCat['num_ligne']] 									= $ValCat['num_ligne'];
 						$tabLinesOrder[$kButton][$ValCat['num_ligne']][$ValCat['num_column']] 		= $ValCat['num_column'];
 						$tabLinesDatas[$kButton][$ValCat['num_ligne']][$ValCat['num_column']][$m]	= $ValCat;
@@ -1719,8 +1736,10 @@ $this->_html .= '<td>';
 						$MaxLines <($ValCat['num_ligne']*1) ? $MaxLines = $ValCat['num_ligne'] : false;
 					}
 				}
-				if(sizeof($CustomMenu)) {
-					foreach($CustomMenu as $kCustom=>$ValCustom) {
+				if(sizeof($CustomMenu)) 
+				{
+					foreach($CustomMenu as $kCustom=>$ValCustom) 
+					{
 						$tabLines[$kButton][$ValCustom['num_ligne']] 										= $ValCustom['num_ligne'];
 						$tabLinesOrder[$kButton][$ValCustom['num_ligne']][$ValCustom['num_column']] 		= $ValCustom['num_column'];
 						$tabLinesDatas[$kButton][$ValCustom['num_ligne']][$ValCustom['num_column']][$m]		= $ValCustom;
@@ -1735,10 +1754,12 @@ $this->_html .= '<td>';
 					}
 				}
 				if(array_key_exists( $kButton, $tabLines))
-				if(sizeof($tabLines[$kButton])) {
+				if(sizeof($tabLines[$kButton])) 
+				{
 					$this->_menu .= '<div class="sub" style="width: '.($MDParameters[0]['MenuWidth'] - 2).'px;  background-color: #'.$ValButton['buttonColor'].'; '.($ValButton['img_name_background']!="" ? 'background-image: url('.$this->_path.'views/img/menu/'.$ValButton['img_name_background'].'); background-repeat:no-repeat; background-position:top left; ' : false).' ">'.$this->eol;
 					$this->_menu .= '<table class="megaDrownTable" cellpadding="0" cellspacing="0" width="100%">';
-					if($MDParameters[0]['stateTR1']=="on") {
+					if($MDParameters[0]['stateTR1']=="on") 
+					{
 						$this->_menu .= '<tr style="height:'.$MDParameters[0]['heightTR1'].'px">';
 							$MDParameters[0]['stateTD1']=="on" ? $nbColspan = 2 : $nbColspan = 1;
 							$this->_menu .= '<td class="megaDrownTR1" valign="top" colspan="'.$nbColspan.'">'.$this->eol;
@@ -1762,70 +1783,87 @@ $this->_html .= '<td>';
 					$this->_menu .= '<td class="megaDrownTD2" valign="top">'.$this->eol;
 					$this->_menu .= '<table class="MegaEvoLinks" style="border:0px">'.$this->eol;
 					$this->_menu .= '<tr>'.$this->eol;
-					for($c=1; $c<=$MaxCols; $c++) {
-						$this->_menu .= '<td valign="top">'.$this->eol;
-						for($l=1; $l<=$MaxLines; $l++) {
+					for($c=1; $c<=$MaxCols; $c++) {						
+          	$this->_menu .= '<td valign="top" class="col'.$c.'">'.$this->eol;
+
+						for($l=1; $l<=$MaxLines; $l++) 
+						{
 							if(array_key_exists($c, $tabColumnDatas[$kButton]))
 							if(array_key_exists($l, $tabColumnDatas[$kButton][$c]))
-							if(sizeof(@$tabColumnDatas[$kButton][$c][$l])) {
+							if(sizeof(@$tabColumnDatas[$kButton][$c][$l])) 
+							{
 								$this->_menu .= '<table border="0" style="width:'.$MDParameters[0]['columnSize'].'px">'.$this->eol;
-								foreach($tabColumnDatas[$kButton][$c][$l] as $keyMenu=>$ValMenu) {
+								foreach($tabColumnDatas[$kButton][$c][$l] as $keyMenu=>$ValMenu) 
+								{
 									$this->_menu .= '<tr>'.$this->eol;
-									$this->_menu .= '<td style="width:'.$MDParameters[0]['columnSize'].'px">'.$this->eol;
-									switch($tabColumnType[$kButton][$c][$l][$keyMenu]) {
+									$this->_menu .= '<td style="width:'.$MDParameters[0]['columnSize'].'px" class="ligne'.$l.'">'.$this->eol
+									switch($tabColumnType[$kButton][$c][$l][$keyMenu]) 
+									{
 										case 'category':
-											$this->_menu .= '<ul>'.$this->eol;
-											$NameCategory = $this->getNameCategory($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
-											$NameSubstitute = $this->getNameSubstitute($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
-											$Category = new Category(intval($ValMenu['id_link_cat']), intval($this->context->cookie->id_lang));
-											$rewrited_url = $this->getCategoryLinkMD($ValMenu['id_link_cat'], $Category->link_rewrite);
-											$this->_menu .= '	<li class="stitle">
-																					<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a>
-																				</li>'.$this->eol;
+											$category = new Category((int)$ValMenu['id_link_cat']);
+										
+											if(!$category->checkAccess($context->customer->id))
+												break;
+											else
+											{
+												$this->_menu .= '<ul>'.$this->eol;
+												$NameCategory = $this->getNameCategory($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
+												$NameSubstitute = $this->getNameSubstitute($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
+												$Category = new Category(intval($ValMenu['id_link_cat']), intval($this->context->cookie->id_lang));
+												$rewrited_url = $this->getCategoryLinkMD($ValMenu['id_link_cat'], $Category->link_rewrite);
+												$this->_menu .= '	<li class="stitle">
+																						<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a>
+																					</li>'.$this->eol;
 
-											if($ValMenu['view_products'] != 'on') 
-											{
-												$NameCategoryUnder = array();
-												$NameCategoryUnder = $this->getNameCategoryUnder($ValMenu['id_link_cat'], $ValButton['id_button']);
-												if(sizeof($NameCategoryUnder)) 
+												if($ValMenu['view_products'] != 'on') 
 												{
-													foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) 
+													$NameCategoryUnder = array();
+													$NameCategoryUnder = $this->getNameCategoryUnder($ValMenu['id_link_cat'], $ValButton['id_button']);
+													if(sizeof($NameCategoryUnder)) 
 													{
-														$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
-														$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
-														$NameCategoryUnder = $this->getNameCategory($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
-														$NameSubstitute = $this->getNameSubstitute($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
-														$this->_menu .= '	<li>
-																								<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategoryUnder[0]['name']).'
-																								</a>
-																							</li>'.$this->eol;
+														foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) 
+														{
+															$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
+															if($Category->checkAccess($context->customer->id))
+															{
+																$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
+																$NameCategoryUnder = $this->getNameCategory($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
+																$NameSubstitute = $this->getNameSubstitute($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
+																$this->_menu .= '	<li>
+																										<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategoryUnder[0]['name']).'
+																										</a>
+																									</li>'.$this->eol;
+															}
+														}
 													}
 												}
-											}
-											else 
-											{
-												$NameProductsUnder = array();
-												$NameProductsUnder = $this->getProductsUnder($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $this->context->shop->id);
-												if(sizeof($NameProductsUnder)) 
+												else 
 												{
-													foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd) 
+													$NameProductsUnder = array();
+													$NameProductsUnder = $this->getProductsUnder($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $this->context->shop->id);
+													if(sizeof($NameProductsUnder)) 
 													{
-														$Products = new Product(intval($ValUnderProd['id_product']), true, intval($this->context->cookie->id_lang));
-														$rewrited_url = $Products->getLink();
-														$NameProduct = $Products->name;
-														$this->_menu .= '<li><a href="'.$rewrited_url.'" style="text-align:left">'.(strlen($NameProduct)>20 ? substr(($NameProduct), 0, 40)."..." : ($NameProduct)).'</a></li>'.$this->eol;
+														foreach($NameProductsUnder as $KUnderProd=>$ValUnderProd) 
+														{
+															$Products = new Product(intval($ValUnderProd['id_product']), true, intval($this->context->cookie->id_lang));
+															$rewrited_url = $Products->getLink();
+															$NameProduct = $Products->name;
+															$this->_menu .= '<li><a href="'.$rewrited_url.'" style="text-align:left">'.(strlen($NameProduct)>20 ? substr(($NameProduct), 0, 40)."..." : ($NameProduct)).'</a></li>'.$this->eol;
+														}
 													}
 												}
+												$this->_menu .= '</ul>'.$this->eol;
 											}
-											$this->_menu .= '</ul>'.$this->eol;
-										break;
+											
+											break;
 										
 										case 'custom':
 											$this->_menu .= '<ul>'.$this->eol;
 											$this->_menu .= '<li class="stitle"><a href="'.$ValMenu['link'].'" '.($ValMenu['link']=="#" || $ValMenu['link']=="" ? "onclick='return false'" : false).' style="text-align:left">'.$ValMenu['name_menu'].'</a></li>'.$this->eol;
 											$NameLinkUnder = array();
 											$NameLinkUnder = $this->getButtonLinksCustomUnder($ValButton['id_button'], $ValMenu['id_custom'], $this->context->cookie->id_lang);
-											if(sizeof($NameLinkUnder)) {
+											if(sizeof($NameLinkUnder)) 
+											{
 												foreach($NameLinkUnder as $KUnderLink=>$ValUnderLink)
 													$this->_menu .= '<li><a href="'.$ValUnderLink['link'].'" '.($ValUnderLink['link']=="#" || $ValUnderLink['link']=="" ? "onclick='return false'" : false).' style="text-align:left">'.$ValUnderLink['name_menu'].'</a></li>'.$this->eol;
 											}
@@ -1870,6 +1908,15 @@ $this->_html .= '<td>';
 		return $image;	
 	}
 	
+	public function hookDisplayBackOfficeHeader()
+	{
+		if (method_exists($this->context->controller, 'addJquery'))
+		{
+			$this->context->controller->addJquery();
+			$this->context->controller->addJqueryUI('ui.sortable');
+		}
+	}
+	
 	public function hookDisplayTop($param) 
 	{	
 		$this->user_groups =  ($this->context->customer->isLogged() ? $this->context->customer->getGroups() : array(Configuration::get('PS_UNIDENTIFIED_GROUP')));
@@ -1879,7 +1926,7 @@ $this->_html .= '<td>';
 		Tools::enableCache();
 		if (!$this->isCached('views/templates/front/navmegadrownevo.tpl', $smarty_cache_id))
 		{
-			$this->makeMegaDrown($this->context->cookie->id_lang);
+			$this->makeMegaDrown();
 			
 			$MDParameters = array();
 			$MDParameters = $this->getParameters();
