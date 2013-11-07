@@ -2,14 +2,14 @@
 /**
  * Module MeGa DrOwN mEnU Evolution - Main file
  *
- * @category	Module / front_office_features
- * @author	Community (since GitHub)
- * @author	PrestaEdit <j.danse@prestaedit.com> (since 2.0)
- * @author	DevForEver (special thanks to him)
- * @copyright	2013 PrestaEdit
- * @version	2.0	
- * @link       	http://www.prestaedit.com/
- * @since	File available since Release 1.0
+ * @category		Module / front_office_features
+ * @author			Community (since GitHub)
+ * @author			PrestaEdit <j.danse@prestaedit.com> (since 2.0)
+ * @author			DevForEver (special thanks to him)
+ * @copyright		2013 PrestaEdit
+ * @version			2.0	
+ * @link       		http://www.prestaedit.com/
+ * @since			File available since Release 1.0
 */
 
 // Security
@@ -27,14 +27,16 @@ class navmegadrownEvo extends Module
 	private $_html = '';
 	
 	private $eol = "\r\n";
+
+	protected $link;
 	
 	public function __construct() 
 	{
 		$this->name = 'navmegadrownevo';
-	 	$this->tab = 'front_office_features';
-	 	$this->version = '2.3.9.4';
+		$this->tab = 'front_office_features';
+		$this->version = '2.3.9.4';
 		$this->author = 'PrestaEdit';		
-	  $this->ps_versions_compliancy['min'] = '1.5.0.1'; 
+		$this->ps_versions_compliancy['min'] = '1.5.0.1'; 
 		$this->need_instance = 0;
 		
 		parent::__construct();
@@ -46,6 +48,8 @@ class navmegadrownEvo extends Module
 		
 		if(!$this->isRegisteredInHook('displayBackOfficeHeader'))
 			$this->registerHook('displayBackOfficeHeader');	
+
+		$this->link = new Link();
 	}
 	
 	public function install()
@@ -675,16 +679,6 @@ class navmegadrownEvo extends Module
 		return Db::getInstance()->ExecuteS('
 		SELECT count(id_link_cat) as nbCols 
 		FROM '._DB_PREFIX_.'admevo_button_link_cat WHERE id_button='.$IdButton.' AND num_ligne='.$Line);
-	}
-	public function getCategoryLinkMD($id_category, $alias = NULL)
-	{
-		if (is_object($id_category))
-			return ($this->allow == 1) ? (_PS_BASE_URL_.__PS_BASE_URI__.intval($id_category->id).'-'.$id_category->link_rewrite) : 
-			(_PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category->id));
-		if ($alias)
-			return ($this->allow == 1) ? (_PS_BASE_URL_.__PS_BASE_URI__.intval($id_category).'-'.$alias) :
-			(_PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category));
-		return _PS_BASE_URL_.__PS_BASE_URI__.'category.php?id_category='.intval($id_category);
 	}
 	
 	function recurseCategory($indexedCategories, $categories, $current, $id_category = 1, $id_category_default = NULL, $CategorySelected, $CategoryLine, $CategoryColumn, $CategoryName, $CategoryState, $ViewProducts)
@@ -1811,7 +1805,7 @@ $this->_html .= '<td>';
 												$NameCategory = $this->getNameCategory($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
 												$NameSubstitute = $this->getNameSubstitute($ValMenu['id_link_cat'], $this->context->cookie->id_lang, $ValButton['id_button']);
 												$Category = new Category(intval($ValMenu['id_link_cat']), intval($this->context->cookie->id_lang));
-												$rewrited_url = $this->getCategoryLinkMD($ValMenu['id_link_cat'], $Category->link_rewrite);
+												$rewrited_url = $this->link->getCategoryLink($ValMenu['id_link_cat'], $Category->link_rewrite);
 												$this->_menu .= '	<li class="stitle">
 																						<a href="'.$rewrited_url.'" style="text-align:left">'.(trim($NameSubstitute[0]['name_substitute']) != '' ? $NameSubstitute[0]['name_substitute'] : $NameCategory[0]['name']).'</a>
 																					</li>'.$this->eol;
@@ -1827,7 +1821,7 @@ $this->_html .= '<td>';
 															$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
 															if($Category->checkAccess($this->context->customer->id))
 															{
-																$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
+																$rewrited_url = $this->link->getCategoryLink($ValUnderCat['id_category'], $Category->link_rewrite);
 																$NameCategoryUnder = $this->getNameCategory($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
 																$NameSubstitute = $this->getNameSubstitute($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
 																$this->_menu .= '	<li>
@@ -2067,4 +2061,3 @@ $this->_html .= '<td>';
 		return $html;
   }
 }
-?>
