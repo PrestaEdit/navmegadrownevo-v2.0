@@ -3,6 +3,7 @@
  * Module MeGa DrOwN mEnU Evolution - Main file
  *
  * @category   	Module / front_office_features
+ * @author     	Community (since GitHub)
  * @author     	PrestaEdit <j.danse@prestaedit.com> (since 2.0)
  * @author     	DevForEver (special thanks to him)
  * @copyright  	2013 PrestaEdit
@@ -782,7 +783,7 @@ $this->_html .= '<td>';
 		$defaultLanguage = intval(Configuration::get('PS_LANG_DEFAULT'));
 		$languages = Language::getLanguages();
 		$iso = Language::getIsoById($defaultLanguage);
-		($ButtonIdInEdit!='' && $ButtonIdInEdit!=0) ? $languageIds = 'ButtonsEdit'.utf8_encode('¤').'Buttons' :$languageIds = 'Buttons';
+		($ButtonIdInEdit!='' && $ButtonIdInEdit!=0) ? $languageIds = 'ButtonsEdit'.utf8_encode('ï¿½').'Buttons' :$languageIds = 'Buttons';
 		$tabButtonsOrganizate = array();
 		
 		$MDConfiguration = $this->getConfigurations();
