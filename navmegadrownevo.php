@@ -1797,13 +1797,13 @@ $this->_html .= '<td>';
 								foreach($tabColumnDatas[$kButton][$c][$l] as $keyMenu=>$ValMenu) 
 								{
 									$this->_menu .= '<tr>'.$this->eol;
-									$this->_menu .= '<td style="width:'.$MDParameters[0]['columnSize'].'px" class="ligne'.$l.'">'.$this->eol
+									$this->_menu .= '<td style="width:'.$MDParameters[0]['columnSize'].'px" class="ligne'.$l.'">'.$this->eol;
 									switch($tabColumnType[$kButton][$c][$l][$keyMenu]) 
 									{
 										case 'category':
 											$category = new Category((int)$ValMenu['id_link_cat']);
 										
-											if(!$category->checkAccess($context->customer->id))
+											if(!$category->checkAccess($this->context->customer->id))
 												break;
 											else
 											{
@@ -1825,7 +1825,7 @@ $this->_html .= '<td>';
 														foreach($NameCategoryUnder as $KUnderCat=>$ValUnderCat) 
 														{
 															$Category = new Category(intval($ValUnderCat['id_category']), intval($this->context->cookie->id_lang));
-															if($Category->checkAccess($context->customer->id))
+															if($Category->checkAccess($this->context->customer->id))
 															{
 																$rewrited_url = $this->getCategoryLinkMD($ValUnderCat['id_category'], $Category->link_rewrite);
 																$NameCategoryUnder = $this->getNameCategory($ValUnderCat['id_category'], $this->context->cookie->id_lang, $ValButton['id_button']);
