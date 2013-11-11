@@ -10,7 +10,7 @@
  * @version			2.0	
  * @link       		http://www.prestaedit.com/
  * @since			File available since Release 1.0
-*/
+ */
 
 // Security
 if (!defined('_PS_VERSION_'))
@@ -1071,6 +1071,7 @@ $this->_html .= '<td>';
 		if (!is_writable(dirname(__FILE__).'/views/img/'))
 			$this->_html .= $this->displayError($this->l('Folder "img" is not writable'));		
 		$this->_html .= '<H2>'.$this->displayName.'</H2>';
+                $this->_html .= '<H4>'.$this->l('Version').' : '.$this->version.'</H4>';
 		$this->_html .= '
 		<fieldset>
 			<legend><img src="../img/admin/add.gif" alt="" title="" />'.$this->l('General').'&nbsp;</legend>';
@@ -1621,6 +1622,7 @@ $this->_html .= '<td>';
 		
 		return	$this->_html;
 	}
+        
 	private function makeMegaDrown() 
 	{
 		$IdLang = $this->context->cookie->id_lang;
