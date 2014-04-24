@@ -1,7 +1,7 @@
 navmegadrownevo-v2.0
 ====================
 
-Menu Mega Drown Evolution v2.0
+Menu Mega Drown Evolution v2.0, pour PrestaShop 1.5
 
 http://www.prestashop.com/forums/topic/195259-module-gratuit-menu-mega-drown-evolution-v20/
 
