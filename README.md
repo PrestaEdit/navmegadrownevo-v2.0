@@ -20,3 +20,8 @@ Téléchargement
 * 2.3.6: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.6.zip
 * 2.3.7: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.7.zip
 * 2.3.8: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.8.zip
+* 2.3.9.0: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.9.0.zip
+* 2.3.9.1: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.9.1.zip
+* 2.3.9.2: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.9.2.zip
+* 2.3.9.3: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.9.3.zip
+* 2.3.9.4: http://prestaedit.com/prestashop/modules/navmegadrownevo/navmegadrownevo-v2.3.9.4.zip
